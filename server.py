@@ -33,7 +33,7 @@ def salary():
 			amount = float(data['Amount'])
 			userId = int(data['UserID'])
 		except:
-			return malformed_request()	
+			return malformed_request()
 		taxAmount = amount * SALARY_TAX
 		amount += taxAmount
 		department = data['Department']
@@ -121,7 +121,7 @@ def withdraw_amount(db,amount,account_id=MAIN_ACCOUNT_ID):
 	table = db['accounts']
 	account = table.find_one(name='main')
 	bal = account['balance'] - amount
-	table.update(dict(name='main',balance=bal),['name'])	
+	table.update(dict(name='main',balance=bal),['name'])
 
 """
 Deposits a specified amount into the specified account
@@ -130,12 +130,12 @@ Deposits a specified amount into the specified account
 @param amount: (float) amount to deposit into the account
 @param account_id: id of the account to deposit into, main account
 id by default
-"""	
+"""
 def deposit_amount(db,amount,account_id=1):
 	table = db['accounts']
 	account = table.find_one(name='main')
 	bal = account['balance'] + amount
-	table.update(dict(name='main',balance=bal),['name'])	
+	table.update(dict(name='main',balance=bal),['name'])
 
 """
 Helper function to get the current date as a string
@@ -162,4 +162,4 @@ def ok_status():
 	return '',status.HTTP_200_OK
 
 if __name__ == "__main__":
-	app.run()
+	app.run(host='0.0.0.0',port=5000,debug=True)
