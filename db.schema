@@ -1,0 +1,35 @@
+CREATE TABLE Accounts(
+	id integer PRIMARY KEY,
+	name text,
+	balance float
+);
+
+CREATE TABLE SalaryTransactions(
+	transactionId integer PRIMARY KEY,
+	date text,
+	postTaxAmount float,
+	department text,
+	taxAmount float,
+	accountId integer,
+	userId integer
+);
+
+CREATE TABLE SalesTransactions(
+	transactionId integer PRIMARY KEY,
+	date string,
+	postTaxAmount float,
+	taxAmount float,
+	transactionType text,
+	salesId integer,
+	accountId integer
+);
+
+CREATE TABLE InventoryTransactions(
+	transactionId integer PRIMARY KEY,
+	date text,
+	postTaxAmount float,
+	taxAmount float,
+	accountId integer
+);
+
+INSERT INTO accounts VALUES (1,"main",1000000.0);
