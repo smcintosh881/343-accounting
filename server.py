@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
 from flask.ext.api import status
 import datetime
 import dataset
@@ -17,7 +17,8 @@ def hello():
 
 @app.route('/salary',methods=['POST'])
 def salary():
-	data = json.loads(request.data)
+	ui_request = request.form is not None
+	data = request.form if ui_request else json.loads(request.data)
 	if data['Amount'] and data['Department'] and data['UserID'] and data['Name']:
 		amount = float(data['Amount'])
 		taxAmount = amount * 0.15
