@@ -1,4 +1,15 @@
 {% extends "basepage.html" %}
 {% block title %}Make Salary Transaction{% endblock %}
 {% block head %}Salary Transaction{% endblock %}
-{% block content %}<br><div>insert salary form here</div>{% endblock %}
+{% block content %}
+    <form method="post" action="{{ url_for('salary') }}">
+        <br>amount:<br>
+        <input name="amount" title="amount" type="number"><br>
+        department:<br>
+        <input name="department" title="department" type="text"><br>
+        user id:<br>
+        <input name="userid" title="userid" type="number"><br>
+        name: <br>
+        <input name="name" title="name" type="text"><br>
+    </form>
+{% endblock %}
