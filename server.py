@@ -1,4 +1,4 @@
-from flask import Flask,request
+from flask import Flask, request, render_template
 from flask.ext.api import status
 import datetime
 import dataset
@@ -7,10 +7,14 @@ import json
 app = Flask(__name__)
 
 MAIN_ACCOUNT_ID = 1
+UI_ROUTE_PREFIX = '/ui'
+
 
 @app.route('/')
 def hello():
 	return 'Hello world'
+
+
 @app.route('/salary',methods=['POST'])
 def salary():
 	data = json.loads(request.data)
@@ -37,6 +41,11 @@ def salary():
 		return '',status.HTTP_200_OK
 	return '',status.HTTP_400_BAD_REQUEST		
 	
+
+@app.route(UI_ROUTE_PREFIX + '/salary', methods=['GET'])
+def salary_ui():
+	return render_template('salary.html')
+
 
 if __name__ == "__main__":
 	app.run()
