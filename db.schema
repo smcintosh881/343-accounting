@@ -16,7 +16,7 @@ CREATE TABLE SalaryTransactions(
 
 CREATE TABLE SalesTransactions(
 	transactionId integer PRIMARY KEY,
-	date string,
+	date text,
 	postTaxAmount float,
 	taxAmount float,
 	transactionType text,
