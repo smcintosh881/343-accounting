@@ -1,2 +1,5 @@
 # JetBrains IDE Files
 .idea/*
+
+# databases
+*.db

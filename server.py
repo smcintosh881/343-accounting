@@ -1,4 +1,4 @@
-from flask import Flask,request
+from flask import Flask, request, render_template, redirect, url_for
 from flask.ext.api import status
 import datetime
 import dataset
@@ -7,6 +7,7 @@ import json
 app = Flask(__name__)
 
 MAIN_ACCOUNT_ID = 1
+UI_ROUTE_PREFIX = '/ui'
 INVENTORY_TAX = 0.08
 SALARY_TAX = 0.15
 
@@ -18,6 +19,7 @@ Hello world page for this app
 def hello():
 	return 'Hello world'
 
+
 """
 Endpoint for the salary transaction API
 This only takes POST requests, will make
@@ -27,7 +29,7 @@ account
 """
 @app.route('/salary',methods=['POST'])
 def salary():
-	data = json.loads(request.data)
+	data = request.form if request.form is not None else json.loads(request.data)
 	if data['Amount'] and data['Department'] and data['UserID'] and data['Name']:
 		try:
 			amount = float(data['Amount'])
@@ -59,7 +61,7 @@ in the request from the main account
 """
 @app.route('/sale',methods=['POST'])
 def sale():
-	data = json.loads(request.data)
+	data = request.form if request.form is not None else json.loads(request.data)
 	if data['preTaxAmount'] and data['taxAmount'] and data['transactionType'] and data['salesID']:
 		try:
 			preTaxAmount = float(data['preTaxAmount'])
@@ -92,7 +94,7 @@ withdraw the amount specified from the main account
 """
 @app.route('/inventory',methods=['POST'])
 def inventory():
-	data = json.loads(request.data)
+	data = request.form if request.form is not None else json.loads(request.data)
 	try:
 		amount = float(data['Amount'])
 	except:
@@ -161,6 +163,35 @@ Returns ok status response, return this when your request is successfully proces
 def ok_status():
 	return '',status.HTTP_200_OK
 
+# UI Pages
+
+
+@app.route(UI_ROUTE_PREFIX + '/salary', methods=['GET'])
+def salary_ui():
+	"""
+	A page that allows users to make salary transactions
+	:return: the salary transaction page
+	"""
+	return render_template('salary.html')
+
+
+@app.route(UI_ROUTE_PREFIX + '/inventory')
+def inventory_ui():
+	"""
+	A page where a user can make an inventory transaction
+	:return: the inventory transaction page
+	"""
+	return render_template('inventory.html')
+
+
+@app.route(UI_ROUTE_PREFIX + '/sale')
+def sale_ui():
+	"""
+	A page where a user can log a sale or a return
+	:return: the sales logging page
+	"""
+	return render_template('sale.html')
+
 if __name__ == "__main__":
-	app.run(host='0.0.0.0',port=5000,debug=False)
+	app.run(host='0.0.0.0', port=5000)
 
