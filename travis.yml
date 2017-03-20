@@ -1,0 +1,11 @@
+language: python
+
+python:
+    - "2.7"
+
+#install all deps
+install: "pip2.7 install -r requirements.txt"
+
+#run tests
+script:
+    - python test.py
