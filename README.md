@@ -7,7 +7,9 @@ The accounting team repo for SWEN-343
 # Getting Started
 
 run a development server:
+    
     navigate to the top layer of the project containing server.py
+    
     find the python path:
         which python.2.7
     run the commands to start virtual environment:
