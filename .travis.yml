@@ -4,8 +4,9 @@ python:
     - "2.7"
 
 #install all deps
-install: "pip2.7 install -r requirements.txt"
+install:  "pip2.7 install -r requirements.txt"
 
 #run tests
 script:
+    - sh build_db.sh
     - python test.py
