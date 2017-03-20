@@ -17,3 +17,9 @@
         <input type="submit" value="submit">
     </form>
 {% endblock %}
+{% block react %}
+  React.render(
+    <h1> hello world </h1>,
+    document.getElementById('content')
+  );
+{% endblock %}
