@@ -29,7 +29,7 @@ account
 """
 @app.route('/salary',methods=['POST'])
 def salary():
-	data = request.form if request.form is not None else json.loads(request.data)
+	data = request.form if not request.data else json.loads(request.data)
 	if data['Amount'] and data['Department'] and data['UserID'] and data['Name']:
 		try:
 			amount = float(data['Amount'])
@@ -61,7 +61,7 @@ in the request from the main account
 """
 @app.route('/sale',methods=['POST'])
 def sale():
-	data = request.form if request.form is not None else json.loads(request.data)
+	data = request.form if not request.data else json.loads(request.data)
 	if data['preTaxAmount'] and data['taxAmount'] and data['transactionType'] and data['salesID']:
 		try:
 			preTaxAmount = float(data['preTaxAmount'])
@@ -94,7 +94,7 @@ withdraw the amount specified from the main account
 """
 @app.route('/inventory',methods=['POST'])
 def inventory():
-	data = request.form if request.form is not None else json.loads(request.data)
+	data = request.form if not request.data else json.loads(request.data)
 	try:
 		amount = float(data['Amount'])
 	except:
