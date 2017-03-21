@@ -94,9 +94,9 @@ withdraw the amount specified from the main account
 """
 @app.route('/inventory',methods=['POST'])
 def inventory():
-	data = request.form if not request.data else json.loads(request.data)
+	data = json.loads(request.data)
 	try:
-		amount = float(data['Amount'])
+		amount = float(data['amount'])
 	except:
 		return malformed_request()
 	taxAmount = amount*INVENTORY_TAX
