@@ -21,7 +21,7 @@
     const initialState = {
         preTaxAmount : null,
         taxAmount : null,
-        transactionType : 'withdrawal',
+        transactionType : '',
         salesID : null
     };
 
@@ -57,6 +57,7 @@
                     <label>
                         Transaction Type<br/>
                         <select name="transactionType" title="transactionType" onChange={this.handleChange} value={this.state.transactionType} >
+                            <option disabled selected value=''></option>
                             <option value="withdrawal">Withdrawal</option>
                             <option value="deposit">Deposit</option>
                         </select><br/>
