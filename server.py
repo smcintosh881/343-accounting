@@ -61,7 +61,7 @@ in the request from the main account
 """
 @app.route('/sale',methods=['POST'])
 def sale():
-	data = request.form if not request.data else json.loads(request.data)
+	data = json.loads(request.data)
 	if data['preTaxAmount'] and data['taxAmount'] and data['transactionType'] and data['salesID']:
 		try:
 			preTaxAmount = float(data['preTaxAmount'])
@@ -194,4 +194,3 @@ def sale_ui():
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=5000)
-
