@@ -155,7 +155,7 @@ def malformed_request():
 Helper function to get an instance of the database
 """
 def get_db():
-	return dataset.connect('sqlite:///enterprise.db')
+	return dataset.connect('sqlite:///D:/School Work/Yr3Sm2/SWEN-343_Enterprise/Code/343-accounting/enterprise.db')
 
 """
 Returns ok status response, return this when your request is successfully processed
