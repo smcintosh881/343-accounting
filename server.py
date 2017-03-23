@@ -16,7 +16,7 @@ Hello world page for this app
 """
 @app.route('/')
 def hello():
-	return 'Hello world'
+	return render_template('landingpage.html')
 
 
 """
