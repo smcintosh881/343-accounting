@@ -93,11 +93,35 @@ class ServerTester(unittest.TestCase):
         s.post("http://127.0.0.1:5000/inventory", data=data)
 
         entry = self.inventoryTable.find_one(transactionId = 0)
-        print entry
         self.assertEqual(entry['postTaxAmount'] - entry['taxAmount'], amount)
         balance = self.accountsTable.find_one(id=1)['balance']
         self.assertEqual(self.startingBalance - entry['postTaxAmount'], balance)
 
+    def test_sales_invalid_transaction_type(self):
+        self.reset_database()
+
+        preTaxAmount = 1000.0
+        taxAmount = 25.0
+        transactionsType = "invalid"
+        salesId = 987
+
+        s = requests.Session()
+        data = "{{\"preTaxAmount\": {}, \"taxAmount\": {},\"transactionType\": \"{}\",\"salesID\": {}}}".format(
+            preTaxAmount, taxAmount, transactionsType, salesId)
+        response = s.post("http://127.0.0.1:5000/sale", data=data)
+
+        self.assertEqual(response.status_code, 400)
+        entry = self.saleTable.find_one(salesId=salesId)
+        self.assertIsNone(entry)
+        balance = self.accountsTable.find_one(id=1)['balance']
+        self.assertEqual(balance, self.startingBalance)
+
+        transactionsType = "deposit"
+        data2 = "{{\"preTaxAmount\": {}, \"taxAmount\": {},\"transactionType\": \"{}\",\"salesID\": {}}}".format(
+            preTaxAmount, taxAmount, transactionsType, salesId)
+        response2 = s.post("http://127.0.0.1:5000/sale", data=data2)
+
+        self.assertEqual(response2.status_code, 200)
 
 def main():
     unittest.main()
