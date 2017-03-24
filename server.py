@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for
 from flask.ext.api import status
-from databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction
+from databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction,getTransactionHistory
 import datetime
 import json
 
@@ -151,6 +151,9 @@ def sale_ui():
 	"""
 	return render_template('sale.html')
 
+@app.route(UI_ROUTE_PREFIX + '/history')
+def history():
+	return getTransactionHistory()
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=5000)

@@ -1,4 +1,6 @@
 import dataset
+import json
+import time
 
 MAIN_ACCOUNT_ID = 1
 
@@ -70,6 +72,33 @@ def salaryTransaction(payload):
 	add_id_and_account_to_payload(payload,pk)
 	table.insert(payload)
 	withdraw_amount(db,payload['postTaxAmount'])
+
+def getTransactionHistory():
+	db = get_db()
+	table = db['SalaryTransactions']
+	transactions = []
+	for i in table.all():
+		t = {}
+		t['date'] = i['date']
+		t['amount'] = i['postTaxAmount']
+		t['account'] = i['accountId']
+		transactions.append(t)
+	table = db['SalesTransactions']
+	for i in table.all():
+		t = {}
+		t['date'] = i['date']
+		t['amount'] = i['postTaxAmount']
+		t['account'] = i['accountId']
+		transactions.append(t)
+	table = db['InventoryTransactions']
+	for i in table.all():
+		t = {}
+		t['date'] = i['date']
+		t['amount'] = i['postTaxAmount']
+		t['account'] = i['accountId']
+		transactions.append(t)
+	transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'],"%B %d %Y")),reverse=False)
+	return json.dumps(transactions)
 
 def add_id_and_account_to_payload(payload,pk):
 	payload['transactionId'] = pk
