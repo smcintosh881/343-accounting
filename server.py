@@ -15,7 +15,7 @@ Hello world page for this app
 #TODO: Possibly remove this soon
 """
 @app.route('/')
-def hello():
+def landing():
 	return render_template('landingpage.html')
 
 
