@@ -1,6 +1,32 @@
 <!doctype html>
 <html>
   <head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script type="text/javascript">
+      const FORM_ID = '#transaction-form';
+
+      function submitForm(url) {
+          var submitData = {},
+              $form = $(FORM_ID),
+              $inputs = $form.find(':input');
+          $inputs.each(function () {
+              submitData[this.name] = $(this).val();
+          });
+          for (var key in submitData) {
+              // if any of the submit data is falsey but not 0 (empty string, null, etc.) do not attempt POST
+              if (!submitData[key] && key !== 0) {
+                  return false;
+              }
+          }
+          $.ajax({
+              url: url,
+              method: 'POST',
+              data : submitData
+          });
+          $form.trigger('reset');
+          return false;
+        }
+    </script>
     {% block head %}
     <title>{% block title %}{% endblock %}</title>
     {% endblock %}

@@ -2,11 +2,12 @@
 {% block title %}Make Salary Transaction{% endblock %}
 {% block content %}
     <h1>Salary Transaction</h1>
-    <form method="post" action="{{ url_for('salary') }}">
+    <form id="transaction-form" onsubmit="return submitForm('{{ url_for('salary') }}')">
         amount:<br>
         <input name="Amount" title="Amount" type="number"><br>
         department:<br>
         <select name="Department" title="Department">
+            <option value="" disabled selected hidden></option>
             <option value="Sales">Sales</option>
             <option value="Accounting">Accounting</option>
             <option value="Human Resources">Human Resources</option>
