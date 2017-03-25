@@ -13,19 +13,51 @@
             <th>Account Number</th>
         </tr>
     </table>
+    <br>
+    <h1>Account Balances</h1>
+    <table id="accounts-table">
+        <tr>
+            <th>Account Number</th>
+            <th>Calculated Balance</th>
+            <th>Stored Balance</th>
+        </tr>
+    </table>
     <script type="text/javascript">
+        const startingBalance = 1000000;
+        var calculatedBalances = {};
         $.ajax({
               url: '{{ url_for('history') }}',
               method: 'GET'
-        }).done(function (data) {
-            var transactions = JSON.parse(data);
+        }).done(function (transactionData) {
+            var transactions = JSON.parse(transactionData);
             if (transactions && transactions.length > 0) {
                 transactions.forEach(function(transaction) {
+                    var amount = transaction.amount,
+                        account = transaction.account;
+                    if (calculatedBalances[account]) {
+                        calculatedBalances[account] += amount;
+                    } else {
+                        calculatedBalances[account] = startingBalance + amount;
+                    }
                     $('#transaction-table').append('<tr><td>' + transaction.date +
-                        '</td><td>' + transaction.amount +
-                        '</td><td>' + transaction.account + '</td></tr>');
+                        '</td><td>' + (amount > 0 ? '+' : '') + amount +
+                        '</td><td>' + account + '</td></tr>');
                 });
             }
+            $.ajax({
+                url: '{{ url_for('accounts') }}',
+                method: 'GET'
+            }).done(function (accountData) {
+                var accounts = JSON.parse(accountData);
+                if (accounts && accounts.length > 0) {
+                    accounts.forEach(function (account) {
+                        $('#accounts-table').append('<tr><td>' + account.id.toString() +
+                            '</td><td>' + ( calculatedBalances[account.id] ? calculatedBalances[account.id].toString() : startingBalance.toString() ) +
+                            '</td><td>' + account.balance.toString() +
+                            '</td></tr>');
+                    });
+                }
+            })
         });
     </script>
 {% endblock %}
