@@ -13,7 +13,8 @@
               submitData[this.name] = $(this).val();
           });
           for (var key in submitData) {
-              // if any of the submit data is falsey but not 0 (empty string, null, etc.) do not attempt POST
+              /* if any of the submit data is falsey but not 0 (empty string, null, etc.)
+              do not attempt POST and do not reset the form */
               if (!submitData[key] && key !== 0) {
                   return false;
               }
@@ -33,6 +34,6 @@
   </head>
   <body>
     <div id="content">{% block content %}{% endblock %}</div>
-    <div id="footer">{% block footer %}{% endblock %}</div>
+    <div id="footer">{% block footer %}<br><a href="{{ url_for('landing') }}">Landing Page</a>{% endblock %}</div>
   </body>
 </html>

@@ -1,0 +1,31 @@
+{% extends "basepage.html" %}
+{% block title %}View Transaction History{% endblock %}
+{% block content %}
+    <h1>Transaction History</h1>
+    <style>
+    table {text-align: center; border-collapse: collapse}
+    table, th, td {border: 1px solid black}
+    </style>
+    <table id="transaction-table">
+        <tr>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Account Number</th>
+        </tr>
+    </table>
+    <script type="text/javascript">
+        $.ajax({
+              url: '{{ url_for('history') }}',
+              method: 'GET'
+        }).done(function (data) {
+            var transactions = JSON.parse(data);
+            if (transactions && transactions.length > 0) {
+                transactions.forEach(function(transaction) {
+                    $('#transaction-table').append('<tr><td>' + transaction.date +
+                        '</td><td>' + transaction.amount +
+                        '</td><td>' + transaction.account + '</td></tr>');
+                });
+            }
+        });
+    </script>
+{% endblock %}

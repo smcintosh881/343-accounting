@@ -95,6 +95,13 @@ def inventory():
 	inventoryTransaction(payload)
 	return ok_status()
 
+"""
+Endpoint for transaction history, only meant for use internally
+by the accounting team so it is not documented in the cross-team API document(s)
+"""
+@app.route('/history', methods=['GET'])
+def history():
+	return getTransactionHistory()
 
 
 """
@@ -152,8 +159,8 @@ def sale_ui():
 	return render_template('sale.html')
 
 @app.route(UI_ROUTE_PREFIX + '/history')
-def history():
-	return getTransactionHistory()
+def history_ui():
+	return render_template('history.html')
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=5000)

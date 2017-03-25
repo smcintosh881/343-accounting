@@ -80,21 +80,21 @@ def getTransactionHistory():
 	for i in table.all():
 		t = {}
 		t['date'] = i['date']
-		t['amount'] = i['postTaxAmount']
+		t['amount'] = i['postTaxAmount'] * -1
 		t['account'] = i['accountId']
 		transactions.append(t)
 	table = db['SalesTransactions']
 	for i in table.all():
 		t = {}
 		t['date'] = i['date']
-		t['amount'] = i['postTaxAmount']
+		t['amount'] = i['postTaxAmount'] * (-1 if i['transactionType'] == 'withdrawal' else 1)
 		t['account'] = i['accountId']
 		transactions.append(t)
 	table = db['InventoryTransactions']
 	for i in table.all():
 		t = {}
 		t['date'] = i['date']
-		t['amount'] = i['postTaxAmount']
+		t['amount'] = i['postTaxAmount'] * -1
 		t['account'] = i['accountId']
 		transactions.append(t)
 	transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'],"%B %d %Y")),reverse=False)
