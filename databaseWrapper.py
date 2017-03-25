@@ -100,6 +100,16 @@ def getTransactionHistory():
 	transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'],"%B %d %Y")),reverse=False)
 	return json.dumps(transactions)
 
+def get_account_balances():
+	accounts = []
+	db = get_db()
+	for account in db['Accounts']:
+		accounts.append({
+			'id': account['id'],
+			'balance': account['balance']
+		})
+	return json.dumps(accounts)
+
 def add_id_and_account_to_payload(payload,pk):
 	payload['transactionId'] = pk
 	if 'accountId' not in payload.keys():
