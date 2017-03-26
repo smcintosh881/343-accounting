@@ -1,7 +1,6 @@
 import requests
 import unittest
-import dataset
-from server import salary, get_db
+from databaseWrapper import get_db
 
 
 class ServerTester(unittest.TestCase):
