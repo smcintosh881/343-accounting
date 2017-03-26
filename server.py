@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for
 from flask.ext.api import status
-from databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction,getTransactionHistory
+from databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction, getTransactionHistory, get_account_balances
 import datetime
 import json
 
@@ -96,6 +96,24 @@ def inventory():
 	return ok_status()
 
 
+# Internal APIs
+
+"""
+Endpoint for transaction history, only meant for use internally
+by the accounting team so it is not documented in the cross-team API document(s)
+"""
+@app.route('/history', methods=['GET'])
+def history():
+	return getTransactionHistory()
+
+
+"""
+Endpoint for viewing account balances, only meant for use internally
+by the accounting team so it is not documented in the cross-team API document(s)
+"""
+@app.route('/accounts', methods=['GET'])
+def accounts():
+	return get_account_balances()
 
 """
 Helper function to get the current date as a string
@@ -153,7 +171,7 @@ def sale_ui():
 
 @app.route(UI_ROUTE_PREFIX + '/history')
 def history_ui():
-	return getTransactionHistory()
+	return render_template('history.html')
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=5000)

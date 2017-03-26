@@ -2,7 +2,7 @@
 {% block title %}Make Inventory Transaction{% endblock %}
 {% block content %}
     <h1>Inventory Transaction</h1>
-    <form method="post" action="{{ url_for('inventory') }}">
+    <form id="transaction-form" onsubmit="return submitForm('{{ url_for('inventory') }}')">
         Amount<br>
         <input name="Amount" title="Amount" type="number"><br>
         <input type="submit" value="submit">
