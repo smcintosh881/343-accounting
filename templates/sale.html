@@ -2,13 +2,14 @@
 {% block title %}Log Sales Withdrawal/Deposit{% endblock %}
 {% block content %}
     <h1>Sales Logging</h1>
-    <form method="post" action="{{ url_for('sale') }}">
+    <form id="transaction-form" onsubmit="return submitForm('{{ url_for('sale') }}')">
         Pre Tax Amount<br>
         <input name="preTaxAmount" title="preTaxAmount" type="number"><br>
         Tax Amount<br>
         <input name="taxAmount" title="taxAmount" type="number"><br>
         Transaction Type<br>
         <select name="transactionType" title="transactionType">
+            <option value="" disabled selected hidden></option>
             <option value="withdrawal">Withdrawal</option>
             <option value="deposit">Deposit</option>
         </select><br>
