@@ -152,7 +152,7 @@ def sale_ui():
 	return render_template('sale.html')
 
 @app.route(UI_ROUTE_PREFIX + '/history')
-def history():
+def history_ui():
 	return getTransactionHistory()
 
 if __name__ == "__main__":
