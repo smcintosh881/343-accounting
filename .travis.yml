@@ -9,6 +9,6 @@ install:  "pip2.7 install -r requirements.txt"
 #run tests
 script:
     - sh build_db.sh
-    - python server.py 
+    - python server.py &
     - python test.py
     - pkill -f server.py
