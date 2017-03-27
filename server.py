@@ -9,6 +9,14 @@ app = Flask(__name__)
 UI_ROUTE_PREFIX = '/ui'
 INVENTORY_TAX = 0.08
 SALARY_TAX = 0.15
+ACCEPTED_DEPARTMENTS = [
+	"Sales",
+	"Accounting",
+	"Human Resources",
+	"Customer Support",
+	"Inventory",
+	"Manufacturing"
+]
 
 """
 Hello world page for this app
@@ -35,9 +43,11 @@ def salary():
 			userId = int(data['UserID'])
 		except:
 			return malformed_request()
+		department = data['Department']
+		if amount <= 0 or userId < 0 and not department in ACCEPTED_DEPARTMENTS:
+			return malformed_request()
 		taxAmount = amount * SALARY_TAX
 		amount += taxAmount
-		department = data['Department']
 		name = data['Name']
 		payload = {'date':get_date(),
 		'postTaxAmount':amount,'department':department,
@@ -62,9 +72,9 @@ def sale():
 			taxAmount = float(data['taxAmount'])
 			salesId = int(data['salesID'])
 			transactionType = data['transactionType'].lower()
-			if transactionType != "deposit" and transactionType != "withdrawal":
-				return malformed_request()
 		except:
+			return malformed_request()
+		if preTaxAmount <= 0 or taxAmount <= 0 or salesId < 0 or (transactionType != "deposit" and transactionType != "withdrawal"):
 			return malformed_request()
 		amount = preTaxAmount + taxAmount
 		payload = {'date': get_date(),
@@ -86,6 +96,8 @@ def inventory():
 	try:
 		amount = float(data['Amount'])
 	except:
+		return malformed_request()
+	if amount <= 0:
 		return malformed_request()
 	taxAmount = amount*INVENTORY_TAX
 	postTaxAmount = amount+taxAmount
