@@ -128,7 +128,7 @@ def malformed_request():
 	return '{\"error_message\":\"Bad Request\"}',status.HTTP_400_BAD_REQUEST
 
 """
-Ret urns ok status response, return this when your request is successfully processed
+Returns ok status response, return this when your request is successfully processed
 """
 def ok_status():
 	return '',status.HTTP_200_OK
