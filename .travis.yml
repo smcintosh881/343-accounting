@@ -11,3 +11,4 @@ script:
     - sh build_db.sh
     - python server.py &! echo "Running server..."
     - python test.py
+    - pkill -f server.py
