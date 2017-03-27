@@ -37,7 +37,7 @@ def deposit_amount(db,amount,account_id=MAIN_ACCOUNT_ID):
 Helper function to get an instance of the database
 """
 def get_db():
-	return dataset.connect('sqlite:///enterprise.db')
+	return dataset.connect('sqlite:///D:/School Work/Yr3Sm2/SWEN-343_Enterprise/Code/343-accounting/enterprise.db')
 
 """
 Creates an inventory transaction with data stored in payload
