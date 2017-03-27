@@ -19,8 +19,8 @@ ACCEPTED_DEPARTMENTS = [
 ]
 
 """
-Hello world page for this app
-#TODO: Possibly remove this soon
+Landing page endpoint that contains links
+to Sales, Salary, Inventory and History
 """
 @app.route('/')
 def landing():
@@ -58,7 +58,7 @@ def salary():
 
 """
 Endpoint for the SalesTransaction API
-THis only takes POST requests, will make
+This only takes POST requests, will make
 a new SalesTransaction in the db if possible
 and withdraw or deposit the amount specified
 in the request from the main account
