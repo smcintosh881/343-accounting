@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for
 from flask.ext.api import status
-from databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction, getTransactionHistory, get_account_balances
+from databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction, getTransactionHistory, get_account_balances,DATE_FORMAT
 import datetime
 import json
 
@@ -131,7 +131,7 @@ def accounts():
 Helper function to get the current date as a string
 """
 def get_date():
-	return datetime.datetime.now().strftime("%B %d %Y")
+	return datetime.datetime.now().strftime(DATE_FORMAT)
 
 """
 Returns bad request response, return this when you get a bad request
