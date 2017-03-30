@@ -3,7 +3,7 @@ import json
 import time
 
 MAIN_ACCOUNT_ID = 1
-
+DATE_FORMAT = "%B %d %Y %H:%M:%S:%f"
 """
 Withdraws a specified amount from the specified account
 
@@ -97,7 +97,7 @@ def getTransactionHistory():
 		t['amount'] = i['postTaxAmount'] * -1
 		t['account'] = i['accountId']
 		transactions.append(t)
-	transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'],"%B %d %Y")),reverse=False)
+	transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'],DATE_FORMAT)),reverse=False)
 	return json.dumps(transactions)
 
 def get_account_balances():
