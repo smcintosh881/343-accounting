@@ -9,3 +9,9 @@ venv/*
 
 # compiled python bytecode
 *.pyc
+
+# python library folders
+bin/*
+include/*
+local/*
+lib/*
