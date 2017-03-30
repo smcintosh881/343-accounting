@@ -1,23 +1,30 @@
 from flask import Flask, request, render_template, redirect, url_for
 from flask.ext.api import status
+from databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction, getTransactionHistory, get_account_balances
 import datetime
-import dataset
 import json
 
 app = Flask(__name__)
 
-MAIN_ACCOUNT_ID = 1
 UI_ROUTE_PREFIX = '/ui'
 INVENTORY_TAX = 0.08
 SALARY_TAX = 0.15
+ACCEPTED_DEPARTMENTS = [
+	"Sales",
+	"Accounting",
+	"Human Resources",
+	"Customer Support",
+	"Inventory",
+	"Manufacturing"
+]
 
 """
-Hello world page for this app
-#TODO: Possibly remove this soon
+Landing page endpoint that contains links
+to Sales, Salary, Inventory and History
 """
 @app.route('/')
-def hello():
-	return 'Hello world'
+def landing():
+	return render_template('landingpage.html')
 
 
 """
@@ -29,60 +36,51 @@ account
 """
 @app.route('/salary',methods=['POST'])
 def salary():
-	data = request.form if not request.data else json.loads(request.data)
+	data = get_data_from_request(request)
 	if data['Amount'] and data['Department'] and data['UserID'] and data['Name']:
 		try:
 			amount = float(data['Amount'])
 			userId = int(data['UserID'])
 		except:
 			return malformed_request()
+		department = data['Department']
+		if amount <= 0 or userId < 0 and not department in ACCEPTED_DEPARTMENTS:
+			return malformed_request()
 		taxAmount = amount * SALARY_TAX
 		amount += taxAmount
-		department = data['Department']
 		name = data['Name']
-		db = get_db()
-		table = db['SalaryTransactions']
-		pk = len(table)
-		payload = {'transactionId':pk,'date':get_date(),
+		payload = {'date':get_date(),
 		'postTaxAmount':amount,'department':department,
-		'taxAmount':taxAmount,'accountId':MAIN_ACCOUNT_ID,
-		'userId':userId}
-		table.insert(payload)
-		withdraw_amount(db,amount)
+		'taxAmount':taxAmount,'userId':userId}
+		salaryTransaction(payload)
 		return ok_status()
 	return malformed_request()
 
 """
 Endpoint for the SalesTransaction API
-THis only takes POST requests, will make
+This only takes POST requests, will make
 a new SalesTransaction in the db if possible
 and withdraw or deposit the amount specified
 in the request from the main account
 """
 @app.route('/sale',methods=['POST'])
 def sale():
-	data = json.loads(request.data)
+	data = get_data_from_request(request)
 	if data['preTaxAmount'] and data['taxAmount'] and data['transactionType'] and data['salesID']:
 		try:
 			preTaxAmount = float(data['preTaxAmount'])
 			taxAmount = float(data['taxAmount'])
 			salesId = int(data['salesID'])
 			transactionType = data['transactionType'].lower()
-			if transactionType != "deposit" and transactionType != "withdrawal":
-				return malformed_request()
-			action = withdraw_amount if transactionType == 'withdrawal' else deposit_amount
 		except:
 			return malformed_request()
+		if preTaxAmount <= 0 or taxAmount <= 0 or salesId < 0 or (transactionType != "deposit" and transactionType != "withdrawal"):
+			return malformed_request()
 		amount = preTaxAmount + taxAmount
-		db = get_db()
-		table = db['SalesTransactions']
-		pk = len(table)
-		payload = {'transactionId':pk,'date': get_date(),
+		payload = {'date': get_date(),
 		'postTaxAmount':amount,'taxAmount':taxAmount,
-		'transactionType':transactionType,'salesId':salesId,
-		'accountId':MAIN_ACCOUNT_ID}
-		table.insert(payload)
-		action(db,amount)
+		'transactionType':transactionType,'salesId':salesId}
+		salesTransaction(payload)
 		return ok_status()
 	return malformed_request()
 
@@ -94,50 +92,40 @@ withdraw the amount specified from the main account
 """
 @app.route('/inventory',methods=['POST'])
 def inventory():
-	data = json.loads(request.data)
+	data = get_data_from_request(request)
 	try:
 		amount = float(data['amount'])
 	except:
 		return malformed_request()
+	if amount <= 0:
+		return malformed_request()
 	taxAmount = amount*INVENTORY_TAX
 	postTaxAmount = amount+taxAmount
-	db = get_db()
-	table = db['InventoryTransactions']
-	pk = len(table)
-	payload = {'transactionId':pk,'date':get_date(),
-	'postTaxAmount':postTaxAmount,'taxAmount': taxAmount,
-	'accountId': MAIN_ACCOUNT_ID}
-	table.insert(payload)
-	withdraw_amount(db,postTaxAmount)
+	payload = {'date':get_date(),
+	'postTaxAmount':postTaxAmount,
+	'taxAmount': taxAmount}
+	inventoryTransaction(payload)
 	return ok_status()
 
-"""
-Withdraws a specified amount from the specified account
 
-@param db: database instance
-@param amount: (float) amount to withdraw from the account
-@param account_id: id of the account to withdraw from, main account
-id by default
-"""
-def withdraw_amount(db,amount,account_id=MAIN_ACCOUNT_ID):
-	table = db['accounts']
-	account = table.find_one(name='main')
-	bal = account['balance'] - amount
-	table.update(dict(name='main',balance=bal),['name'])
+# Internal APIs
 
 """
-Deposits a specified amount into the specified account
-
-@param db: database instance
-@param amount: (float) amount to deposit into the account
-@param account_id: id of the account to deposit into, main account
-id by default
+Endpoint for transaction history, only meant for use internally
+by the accounting team so it is not documented in the cross-team API document(s)
 """
-def deposit_amount(db,amount,account_id=1):
-	table = db['accounts']
-	account = table.find_one(name='main')
-	bal = account['balance'] + amount
-	table.update(dict(name='main',balance=bal),['name'])
+@app.route('/history', methods=['GET'])
+def history():
+	return getTransactionHistory()
+
+
+"""
+Endpoint for viewing account balances, only meant for use internally
+by the accounting team so it is not documented in the cross-team API document(s)
+"""
+@app.route('/accounts', methods=['GET'])
+def accounts():
+	return get_account_balances()
 
 """
 Helper function to get the current date as a string
@@ -152,16 +140,17 @@ def malformed_request():
 	return '{\"error_message\":\"Bad Request\"}',status.HTTP_400_BAD_REQUEST
 
 """
-Helper function to get an instance of the database
-"""
-def get_db():
-	return dataset.connect('sqlite:///enterprise.db')
-
-"""
 Returns ok status response, return this when your request is successfully processed
 """
 def ok_status():
 	return '',status.HTTP_200_OK
+
+"""
+Helper function to get data from request
+"""
+def get_data_from_request(request):
+	return request.form if not request.data else json.loads(request.data)
+
 
 # UI Pages
 
@@ -191,6 +180,10 @@ def sale_ui():
 	:return: the sales logging page
 	"""
 	return render_template('sale.html')
+
+@app.route(UI_ROUTE_PREFIX + '/history')
+def history_ui():
+	return render_template('history.html')
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=5000)

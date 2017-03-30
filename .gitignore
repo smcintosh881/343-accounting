@@ -4,5 +4,8 @@
 # databases
 *.db
 
-# virtual environment
+# virtual environments
 venv/*
+
+# compiled python bytecode
+*.pyc
