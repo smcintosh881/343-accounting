@@ -1,9 +1,11 @@
+import datetime
 import dataset
 import json
 import time
 
 MAIN_ACCOUNT_ID = 1
 DATE_FORMAT = "%B %d %Y %H:%M:%S:%f"
+
 """
 Withdraws a specified amount from the specified account
 
@@ -13,7 +15,7 @@ Withdraws a specified amount from the specified account
 id by default
 """
 def withdraw_amount(db,amount,account_id=MAIN_ACCOUNT_ID):
-	table = db['accounts']
+	table = db['Accounts']
 	account = table.find_one(name='main')
 	bal = account['balance'] - amount
 	table.update(dict(name='main',balance=bal),['name'])
@@ -27,11 +29,53 @@ Deposits a specified amount into the specified account
 id by default
 """
 def deposit_amount(db,amount,account_id=MAIN_ACCOUNT_ID):
-	table = db['accounts']
+	table = db['Accounts']
 	account = table.find_one(name='main')
 	bal = account['balance'] + amount
 	table.update(dict(name='main',balance=bal),['name'])
 
+"""
+Register an amount of taxes owed
+
+@param db: database instance
+@param amount: (float) amount of owed taxes to register into the tax account
+"""
+def register_tax_amount(db,amount):
+	table = db['Accounts']
+	account = table.find_one(name="tax")
+	bal = account['balance'] + amount
+	table.update(dict(name='tax',balance=bal),['name'])
+
+"""
+Pay a specified amount of owed taxes
+
+@param db: database instance
+@param amount: (float) amount of owed taxes to register into the tax account
+"""
+def pay_tax_amount(db,amount,register=True):
+	table = db['Accounts']
+	account = table.find_one(name="tax")
+	withdraw_amount(db,amount)
+	bal = account['balance'] - amount
+	if register:
+		make_tax_transaction(db,amount)
+	table.update(dict(name='tax',balance=bal),['name'])
+
+"""
+Log a tax payment in the database
+
+@param db: database instance
+@param amount: (float) amount of tax paid in transaction
+"""
+def make_tax_transaction(db,amount):
+	table = db['TaxTransactions']
+	pk = len(table)
+	payload = {
+		'date':datetime.datetime.now().strftime(DATE_FORMAT),
+		'id':pk,
+		'amount':amount
+	}
+	table.insert(payload)
 
 """
 Helper function to get an instance of the database
@@ -48,7 +92,8 @@ def inventoryTransaction(payload):
 	pk = len(table)
 	add_id_and_account_to_payload(payload,pk)
 	table.insert(payload)
-	withdraw_amount(db,payload['postTaxAmount'])
+	withdraw_amount(db,payload['postTaxAmount']-payload['taxAmount'])
+	register_tax_amount(db,payload['taxAmount'])
 
 """
 Creates a salesTransaction with the data stored in payload
@@ -60,7 +105,13 @@ def salesTransaction(payload):
 	add_id_and_account_to_payload(payload,pk)
 	table.insert(payload)
 	action = withdraw_amount if payload['transactionType'] == 'withdrawal' else deposit_amount
-	action(db,payload['postTaxAmount'])
+	action(db,payload['postTaxAmount']-payload['taxAmount'])
+	if payload['transactionType'] == 'withdrawal':
+		pay_tax_amount(db,payload['taxAmount'],register=False)
+	else:
+		register_tax_amount(db,payload['taxAmount'])
+
+	
 
 """
 Creates a salaryTransaction with the data stored in payload
@@ -71,7 +122,9 @@ def salaryTransaction(payload):
 	pk = len(table)
 	add_id_and_account_to_payload(payload,pk)
 	table.insert(payload)
-	withdraw_amount(db,payload['postTaxAmount'])
+	withdraw_amount(db,payload['postTaxAmount']-payload['taxAmount'])
+	register_tax_amount(db,payload['taxAmount'])
+
 
 def getTransactionHistory():
 	db = get_db()
@@ -80,21 +133,21 @@ def getTransactionHistory():
 	for i in table.all():
 		t = {}
 		t['date'] = i['date']
-		t['amount'] = i['postTaxAmount'] * -1
+		t['amount'] = (i['postTaxAmount'] - i['taxAmount']) * -1
 		t['account'] = i['accountId']
 		transactions.append(t)
 	table = db['SalesTransactions']
 	for i in table.all():
 		t = {}
 		t['date'] = i['date']
-		t['amount'] = i['postTaxAmount'] * (-1 if i['transactionType'] == 'withdrawal' else 1)
+		t['amount'] = (i['postTaxAmount'] - i['taxAmount']) * (-1 if i['transactionType'] == 'withdrawal' else 1)
 		t['account'] = i['accountId']
 		transactions.append(t)
 	table = db['InventoryTransactions']
 	for i in table.all():
 		t = {}
 		t['date'] = i['date']
-		t['amount'] = i['postTaxAmount'] * -1
+		t['amount'] = (i['postTaxAmount'] - i['taxAmount']) * -1
 		t['account'] = i['accountId']
 		transactions.append(t)
 	transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'],DATE_FORMAT)),reverse=False)
