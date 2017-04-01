@@ -39,7 +39,7 @@
                     } else {
                         calculatedBalances[account] = startingBalance + amount;
                     }
-                    $('#transaction-table').append('<tr><td>' + transaction.date +
+                    $('#transaction-table').append('<tr><td>' + transaction.date.substring(0,transaction.date.length-7) +
                         '</td><td>' + (amount > 0 ? '+' : '') + amount +
                         '</td><td>' + account + '</td></tr>');
                 });
