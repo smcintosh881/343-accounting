@@ -1,6 +1,8 @@
 import requests
 import unittest
 from databaseWrapper import get_db
+import subprocess
+import time
 
 
 class ServerTester(unittest.TestCase):
@@ -17,12 +19,12 @@ class ServerTester(unittest.TestCase):
         self.inventoryTable.delete()
         self.accountsTable.delete()
         accountData = dict(id = 1, name = 'main', balance = self.startingBalance)
+	tax = dict(id = 2, name = 'tax', balance = 0)
         self.accountsTable.insert(accountData)
-
+	self.accountsTable.insert(tax)
 
     def test_salary_table_updated(self):
         self.reset_database()
-
         amount = 350.00
         department = 'Accounting'
         userId = 789
@@ -38,11 +40,10 @@ class ServerTester(unittest.TestCase):
         self.assertEqual(entry['userId'], userId)
         self.assertEqual(self.salaryTable.count(), 1)
         balance = self.accountsTable.find_one(id = 1)['balance']
-        self.assertEqual(entry['postTaxAmount'], self.startingBalance - balance)
+        self.assertEqual(entry['postTaxAmount'] - entry['taxAmount'], self.startingBalance - balance)
 
     def test_saledeposit_table_updated(self):
         self.reset_database()
-
         preTaxAmount = 100.0
         taxAmount = 7.0
         transactionsType = "Deposit"
@@ -51,7 +52,7 @@ class ServerTester(unittest.TestCase):
         s = requests.Session()
         data = "{{\"preTaxAmount\": {}, \"taxAmount\": {},\"transactionType\": \"{}\",\"salesID\": {}}}".format(
             preTaxAmount, taxAmount, transactionsType, salesId)
-        s.post("http://127.0.0.1:5000/sale", data=data)
+        r = s.post("http://127.0.0.1:5000/sale", data=data)
 
         entry = self.saleTable.find_one(salesId = salesId)
         self.assertEqual(entry['postTaxAmount'], preTaxAmount + taxAmount)
@@ -59,11 +60,10 @@ class ServerTester(unittest.TestCase):
         self.assertEqual(entry['transactionType'], transactionsType.lower())
         self.assertEqual(entry['salesId'], salesId)
         balance = self.accountsTable.find_one(id=1)['balance']
-        self.assertEqual(self.startingBalance + entry['postTaxAmount'], balance)
+        self.assertEqual(self.startingBalance + (entry['postTaxAmount'] - entry['taxAmount']), balance)
 
     def test_salewithdrawal_table_updated(self):
         self.reset_database()
-
         preTaxAmount = 47356.21
         taxAmount = 73.91
         transactionsType = "withdrawal"
@@ -84,7 +84,6 @@ class ServerTester(unittest.TestCase):
 
     def test_inventory_table_updated(self):
         self.reset_database()
-
         amount = 214544.12
 
         s = requests.Session()
@@ -94,11 +93,10 @@ class ServerTester(unittest.TestCase):
         entry = self.inventoryTable.find_one(transactionId = 0)
         self.assertEqual(entry['postTaxAmount'] - entry['taxAmount'], amount)
         balance = self.accountsTable.find_one(id=1)['balance']
-        self.assertEqual(self.startingBalance - entry['postTaxAmount'], balance)
+        self.assertEqual(self.startingBalance - (entry['postTaxAmount'] - entry['taxAmount']), balance)
 
     def test_sales_invalid_transaction_type(self):
         self.reset_database()
-
         preTaxAmount = 1000.0
         taxAmount = 25.0
         transactionsType = "invalid"
