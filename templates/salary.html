@@ -1,24 +1,60 @@
 {% extends "basepage.html" %}
 {% block title %}Make Salary Transaction{% endblock %}
-{% block content %}
-    <h1>Salary Transaction</h1>
-    <form id="transaction-form" onsubmit="return submitForm('{{ url_for('salary') }}')">
-        Amount:<br>
-        <input name="Amount" title="Amount" type="number"><br>
-        Department:<br>
-        <select name="Department" title="Department">
-            <option value="" disabled selected hidden></option>
-            <option value="Sales">Sales</option>
-            <option value="Accounting">Accounting</option>
-            <option value="Human Resources">Human Resources</option>
-            <option value="Customer Support">Customer Support</option>
-            <option value="Inventory">Inventory</option>
-            <option value="Manufacturing">Manufacturing</option>
-        </select><br>
-        User Id:<br>
-        <input name="UserID" title="UserID" type="number"><br>
-        Name: <br>
-        <input name="Name" title="Name" type="text"><br>
-        <input type="submit" value="submit">
-    </form>
+{% block react %}
+    const initialState = {
+        amount : null,
+        department : null,
+        userID : null,
+        name : null
+    };
+
+    class SalaryForm extends React.Component {
+        constructor(props) {
+            super(props)
+            this.handleChange = this.handleChange.bind(this);
+            this.handleSubmit = this.handleSubmit.bind(this);
+            this.state = initialState;
+        }
+
+        handleChange(event) {
+            this.setState({[event.target.name]: isNaN(event.target.value) ? event.target.value : Number(event.target.value)});
+        }
+
+        handleSubmit(event) {
+            event.preventDefault();
+            fetch('{{ url_for('salary') }}', {
+                method : 'POST',
+                body : JSON.stringify(this.state)
+            })
+            this.setState(initialState);
+        }
+
+        render() {
+            return (
+                <form onSubmit={this.handleSubmit}>
+                    <label for="Amount">Amount:</label><br/>
+                    <input name="Amount" title="Amount" type="number" onChange={this.handleChange} value={this.state.amount} /><br/>
+                    <label for="Department">Department:</label><br/>
+                    <select name="Department" title="Department" onChange={this.handleChange} value={this.state.department}><br/>
+                        <option value="" disabled selected hidden></option>
+                        <option value="Sales">Sales</option>
+                        <option value="Accounting">Accounting</option>
+                        <option value="Human Resources">Human Resources</option>
+                        <option value="Customer Support">Customer Support</option>
+                        <option value="Inventory">Inventory</option>
+                        <option value="Manufacturing">Manufacturing</option>
+                    </select><br/>
+                    <label for="UserID">User Id:</label><br/>
+                    <input name="UserID" title="UserID" type="number" onChange={this.handleChange} value={this.state.userID} /><br/>
+                    <label for="Name">Name:</label><br/>
+                    <input name="Name" title="Name" type="text" onChange={this.handleChange} value={this.state.name} /><br/>
+                    <input type="submit" value="submit" />
+                </form>
+            )
+        }
+    }
+    React.render(
+        React.createElement(SalaryForm),
+        document.getElementById('content')
+    );
 {% endblock %}
