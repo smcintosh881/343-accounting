@@ -32,4 +32,11 @@ CREATE TABLE InventoryTransactions(
 	accountId integer
 );
 
-INSERT INTO accounts VALUES (1,"main",1000000.0);
+CREATE TABLE TaxTransactions(
+	transactionId integer PRIMARY KEY,
+	date text,
+	amount float
+);
+
+INSERT INTO Accounts VALUES (1,"main",1000000.0);
+INSERT INTO Accounts VALUES (2,"tax",0.0);
