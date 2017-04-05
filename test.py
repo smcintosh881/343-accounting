@@ -31,7 +31,7 @@ class ServerTester(unittest.TestCase):
         name = 'Joe Doe'
 
         s = requests.Session()
-        data = "{{\"Amount\": {},\"Department\": \"{}\",\"UserID\": {},\"Name\": \"{}\"}}".format(amount, department, userId, name)
+        data = "{{\"amount\": {},\"department\": \"{}\",\"userID\": {},\"name\": \"{}\"}}".format(amount, department, userId, name)
         s.post("http://127.0.0.1:5000/salary",data=data)
 
         entry = self.salaryTable.find_one(userId = userId)
