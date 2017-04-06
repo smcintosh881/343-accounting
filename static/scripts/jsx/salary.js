@@ -2,10 +2,10 @@
  * Created by shannon on 4/3/17.
  */
 const initialState = {
-    Amount : null,
-    Department : null,
-    UserID : null,
-    Name : null
+    amount : null,
+    department : null,
+    userID : null,
+    name : null
 };
 
 class SalaryForm extends React.Component {
@@ -44,9 +44,9 @@ class SalaryForm extends React.Component {
             <div>
             <form onSubmit={this.handleSubmit}>
                 <label>Amount:</label><br/>
-                <input name="Amount" title="Amount" type="number" onChange={this.handleChange} value={this.state.Amount} /><br/>
+                <input name="amount" title="amount" type="number" onChange={this.handleChange} value={this.state.amount} /><br/>
                 <label>Department:</label><br/>
-                <select name="Department" title="Department" onChange={this.handleChange} value={this.state.Department}><br/>
+                <select name="department" title="department" onChange={this.handleChange} value={this.state.department}><br/>
                     <option value="" disabled selected hidden></option>
                     <option value="Sales">Sales</option>
                     <option value="Accounting">Accounting</option>
@@ -56,9 +56,9 @@ class SalaryForm extends React.Component {
                     <option value="Manufacturing">Manufacturing</option>
                 </select><br/>
                 <label>User Id:</label><br/>
-                <input name="UserID" title="UserID" type="number" onChange={this.handleChange} value={this.state.UserID} /><br/>
+                <input name="userID" title="userID" type="number" onChange={this.handleChange} value={this.state.userID} /><br/>
                 <label>Name:</label><br/>
-                <input name="Name" title="Name" type="text" onChange={this.handleChange} value={this.state.Name} /><br/>
+                <input name="name" title="name" type="text" onChange={this.handleChange} value={this.state.name} /><br/>
                 <input type="submit" value="submit" />
             </form>
             </div>
