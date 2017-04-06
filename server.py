@@ -37,18 +37,18 @@ account
 @app.route('/salary',methods=['POST'])
 def salary():
 	data = get_data_from_request(request)
-	if data['Amount'] and data['Department'] and data['UserID'] and data['Name']:
+	if data['amount'] and data['department'] and data['userID'] and data['name']:
 		try:
-			amount = float(data['Amount'])
-			userId = int(data['UserID'])
+			amount = float(data['amount'])
+			userId = int(data['userID'])
 		except:
 			return malformed_request()
-		department = data['Department']
+		department = data['department']
 		if amount <= 0 or userId < 0 and not department in ACCEPTED_DEPARTMENTS:
 			return malformed_request()
 		taxAmount = amount * SALARY_TAX
 		amount += taxAmount
-		name = data['Name']
+		name = data['name']
 		payload = {'date':get_date(),
 		'postTaxAmount':amount,'department':department,
 		'taxAmount':taxAmount,'userId':userId}
