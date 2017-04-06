@@ -19,9 +19,9 @@ class ServerTester(unittest.TestCase):
         self.inventoryTable.delete()
         self.accountsTable.delete()
         accountData = dict(id = 1, name = 'main', balance = self.startingBalance)
-	tax = dict(id = 2, name = 'tax', balance = 0)
+        tax = dict(id = 2, name = 'tax', balance = 0)
         self.accountsTable.insert(accountData)
-	self.accountsTable.insert(tax)
+        self.accountsTable.insert(tax)
 
     def test_salary_table_updated(self):
         self.reset_database()
