@@ -1,24 +1,5 @@
 {% extends "basepage.html" %}
 {% block title %}Make Salary Transaction{% endblock %}
-{% block content %}
-    <h1>Salary Transaction</h1>
-    <form id="transaction-form" onsubmit="return submitForm('{{ url_for('salary') }}')">
-        Amount:<br>
-        <input name="Amount" title="Amount" type="number"><br>
-        Department:<br>
-        <select name="Department" title="Department">
-            <option value="" disabled selected hidden></option>
-            <option value="Sales">Sales</option>
-            <option value="Accounting">Accounting</option>
-            <option value="Human Resources">Human Resources</option>
-            <option value="Customer Support">Customer Support</option>
-            <option value="Inventory">Inventory</option>
-            <option value="Manufacturing">Manufacturing</option>
-        </select><br>
-        User Id:<br>
-        <input name="UserID" title="UserID" type="number"><br>
-        Name: <br>
-        <input name="Name" title="Name" type="text"><br>
-        <input type="submit" value="submit">
-    </form>
+{% block external_js %}
+    <script type="text/jsx" src="{{ url_for('static', filename='scripts/jsx/salary.js') }}"></script>
 {% endblock %}

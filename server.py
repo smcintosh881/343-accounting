@@ -94,7 +94,7 @@ withdraw the amount specified from the main account
 def inventory():
 	data = get_data_from_request(request)
 	try:
-		amount = float(data['Amount'])
+		amount = float(data['amount'])
 	except:
 		return malformed_request()
 	if amount <= 0:
@@ -187,4 +187,3 @@ def history_ui():
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=5000)
-

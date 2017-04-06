@@ -87,7 +87,7 @@ class ServerTester(unittest.TestCase):
         amount = 214544.12
 
         s = requests.Session()
-        data = "{{\"Amount\": {}}}".format(amount)
+        data = "{{\"amount\": {}}}".format(amount)
         s.post("http://127.0.0.1:5000/inventory", data=data)
 
         entry = self.inventoryTable.find_one(transactionId = 0)
