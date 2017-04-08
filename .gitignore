@@ -15,3 +15,9 @@ bin/*
 include/*
 local/*
 lib/*
+
+# npm modules
+node_modules/*
+
+# installed bower components
+static/bower_components/*

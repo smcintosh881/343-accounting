@@ -1,0 +1,25 @@
+{
+  "name": "343-accounting",
+  "version": "1.0.0",
+  "description": "The accounting team repo for SWEN-343 hosted on vm currently at:",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smcintosh881/343-accounting.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/smcintosh881/343-accounting/issues"
+  },
+  "homepage": "https://github.com/smcintosh881/343-accounting#readme",
+  "dependencies": {
+    "bower": "^1.8.0"
+  },
+  "devDependencies": {
+    "bower": "^1.8.0"
+  }
+}

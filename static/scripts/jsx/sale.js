@@ -52,7 +52,7 @@ class SaleForm extends React.Component {
     }
 }
 
-React.render(
+ReactDOM.render(
     React.createElement(SaleForm),
     document.getElementById('content')
 );
