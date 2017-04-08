@@ -4,7 +4,8 @@
   "description": "The accounting team repo for SWEN-343 hosted on vm currently at:",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel ui --presets es2015,react --out-dir static/scripts/compiled_jsx"
   },
   "repository": {
     "type": "git",
@@ -17,9 +18,11 @@
   },
   "homepage": "https://github.com/smcintosh881/343-accounting#readme",
   "dependencies": {
-    "bower": "^1.8.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
     "bower": "^1.8.0"
   }
 }
