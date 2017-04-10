@@ -1,0 +1,21 @@
+{
+  "name": "343-accounting",
+  "homepage": "https://github.com/smcintosh881/343-accounting",
+  "authors": [
+    "Bill Tarr <betarr13@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "./static/bower_components"
+  ],
+  "dependencies": {
+    "react": "^15.5.0"
+  }
+}

@@ -66,7 +66,7 @@ class SalaryForm extends React.Component {
     }
 }
 
-React.render(
+ReactDOM.render(
     React.createElement(SalaryForm),
     document.getElementById('content')
 );
