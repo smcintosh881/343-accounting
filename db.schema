@@ -11,7 +11,8 @@ CREATE TABLE SalaryTransactions(
 	department text,
 	taxAmount float,
 	accountId integer,
-	userId integer
+	userId integer,
+	tag text
 );
 
 CREATE TABLE SalesTransactions(
@@ -36,6 +37,13 @@ CREATE TABLE TaxTransactions(
 	transactionId integer PRIMARY KEY,
 	date text,
 	amount float
+);
+
+CREATE TABLE TaxPayments(
+	paymentId integer PRIMARY KEY,
+	date text,
+	amount float,
+	accountId integer
 );
 
 INSERT INTO Accounts VALUES (1,"main",1000000.0);
