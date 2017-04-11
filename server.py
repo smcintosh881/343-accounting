@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for
 from flask.ext.api import status
-from databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction, getTransactionHistory, get_account_balances,DATE_FORMAT
+from databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction, getTransactionHistory, get_account_balances,DATE_FORMAT,pay_tax_amount
 import datetime
 import json
 
@@ -127,6 +127,19 @@ by the accounting team so it is not documented in the cross-team API document(s)
 def accounts():
 	return get_account_balances()
 
+"""
+Internal API endpoint for paying taxes
+"""
+@app.route('/paytax',methods=['POST'])
+def pay_tax():
+	data = get_data_from_request(request)
+	try:
+		amount = int(data['amount'])
+	except:
+		return malformed_request()
+	pay_tax_amount(None,amount)
+	return ok_status()
+	
 """
 Helper function to get the current date as a string
 """

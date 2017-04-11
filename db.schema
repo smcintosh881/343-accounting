@@ -38,5 +38,12 @@ CREATE TABLE TaxTransactions(
 	amount float
 );
 
+CREATE TABLE TaxPayments(
+	paymentId integer PRIMARY KEY,
+	date text,
+	amount float,
+	accountId integer
+)
+
 INSERT INTO Accounts VALUES (1,"main",1000000.0);
 INSERT INTO Accounts VALUES (2,"tax",0.0);

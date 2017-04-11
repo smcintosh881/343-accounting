@@ -52,7 +52,9 @@ Pay a specified amount of owed taxes
 @param db: database instance
 @param amount: (float) amount of owed taxes to register into the tax account
 """
-def pay_tax_amount(db,amount,register=True):
+def pay_tax_amount(db,amount,register=True,accountId=1):
+	if db is None:
+		db = get_db()
 	table = db['Accounts']
 	account = table.find_one(name="tax")
 	withdraw_amount(db,amount)
@@ -60,6 +62,14 @@ def pay_tax_amount(db,amount,register=True):
 	if register:
 		make_tax_transaction(db,amount)
 	table.update(dict(name='tax',balance=bal),['name'])
+	table = db['TaxPayments']	
+	taxPayment = {
+		'id': len(table)
+		'date' = datetime.datetime.now().strftime(DATE_FORMAT),
+		'amount' = amount,
+		'accountId' = accountId
+	}
+	table.insert(taxPayment)
 
 """
 Log a tax payment in the database
@@ -76,6 +86,8 @@ def make_tax_transaction(db,amount):
 		'amount':amount
 	}
 	table.insert(payload)
+
+
 
 """
 Helper function to get an instance of the database
@@ -148,6 +160,13 @@ def getTransactionHistory():
 		t = {}
 		t['date'] = i['date']
 		t['amount'] = (i['postTaxAmount'] - i['taxAmount']) * -1
+		t['account'] = i['accountId']
+		transactions.append(t)
+	table = db['InventoryTransactions']
+	for i in table.all():
+		t = {}
+		t['date'] = i['date']
+		t['amount'] = i['amount'] * -1
 		t['account'] = i['accountId']
 		transactions.append(t)
 	transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'],DATE_FORMAT)),reverse=False)
