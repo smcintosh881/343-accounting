@@ -9,3 +9,18 @@ venv/*
 
 # compiled python bytecode
 *.pyc
+
+# python library folders
+bin/*
+include/*
+local/*
+lib/*
+
+# npm modules
+node_modules/*
+
+# installed bower components
+static/bower_components/*
+
+# compiled jsx files
+static/scripts/compiled_jsx

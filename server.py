@@ -43,6 +43,10 @@ def salary():
 			userId = int(data['userID'])
 		except:
 			return malformed_request()
+		try:
+			tag = data['tag']
+		except:
+			tag = "ssalary"
 		department = data['department']
 		if amount <= 0 or userId < 0 and not department in ACCEPTED_DEPARTMENTS:
 			return malformed_request()
@@ -51,7 +55,7 @@ def salary():
 		name = data['name']
 		payload = {'date':get_date(),
 		'postTaxAmount':amount,'department':department,
-		'taxAmount':taxAmount,'userId':userId}
+		'taxAmount':taxAmount,'userId':userId,'tag':tag}
 		salaryTransaction(payload)
 		return ok_status()
 	return malformed_request()
@@ -94,7 +98,7 @@ withdraw the amount specified from the main account
 def inventory():
 	data = get_data_from_request(request)
 	try:
-		amount = float(data['Amount'])
+		amount = float(data['amount'])
 	except:
 		return malformed_request()
 	if amount <= 0:
@@ -200,4 +204,3 @@ def history_ui():
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=5000)
-

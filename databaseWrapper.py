@@ -64,10 +64,10 @@ def pay_tax_amount(db,amount,register=True,accountId=1):
 	table.update(dict(name='tax',balance=bal),['name'])
 	table = db['TaxPayments']	
 	taxPayment = {
-		'id': len(table)
-		'date' = datetime.datetime.now().strftime(DATE_FORMAT),
-		'amount' = amount,
-		'accountId' = accountId
+		'id': len(table),
+		'date' : datetime.datetime.now().strftime(DATE_FORMAT),
+		'amount' : amount,
+		'accountId' : accountId
 	}
 	table.insert(taxPayment)
 
