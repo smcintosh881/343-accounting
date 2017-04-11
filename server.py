@@ -43,6 +43,10 @@ def salary():
 			userId = int(data['userID'])
 		except:
 			return malformed_request()
+		try:
+			tag = data['tag']
+		except:
+			tag = "ssalary"
 		department = data['department']
 		if amount <= 0 or userId < 0 and not department in ACCEPTED_DEPARTMENTS:
 			return malformed_request()
@@ -51,7 +55,7 @@ def salary():
 		name = data['name']
 		payload = {'date':get_date(),
 		'postTaxAmount':amount,'department':department,
-		'taxAmount':taxAmount,'userId':userId}
+		'taxAmount':taxAmount,'userId':userId,'tag':tag}
 		salaryTransaction(payload)
 		return ok_status()
 	return malformed_request()
