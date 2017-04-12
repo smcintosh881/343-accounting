@@ -29,6 +29,17 @@ var data = {
 };
 
 var options = {};
+var transaction_history = null;
+
+var xmlHttp = new XMLHttpRequest();
+xmlHttp.onreadystatechange = function () {
+  if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+      transaction_history = xmlHttp.responseText;
+      console.log(transaction_history);
+  }
+};
+xmlHttp.open("GET", '/reporting', true);
+xmlHttp.send(null);
 
 class MyComponent extends React.Component {
     constructor(props) {
