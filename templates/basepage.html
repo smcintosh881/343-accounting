@@ -1,8 +1,8 @@
 <!doctype html>
 <!-- import react -->
-<script src="{{ url_for('static', filename='bower_components/react/react.min.js') }}"></script>
-<script src="{{ url_for('static', filename='bower_components/react/react-dom.min.js') }}"></script>
-<script src="{{ url_for('static', filename='bower_components/react-chartjs/dist/react-chartjs.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bower_components/react/react.js') }}"></script>
+<script src="{{ url_for('static', filename='bower_components/react/react-dom.js') }}"></script>
+<script src="{{ url_for('static', filename='bower_components/react-chartjs/dist/react-chartjs.js') }}"></script>
 <html>
   <head>
     {% block head %}
@@ -11,7 +11,6 @@
   </head>
   <body>
     <div id="content">{% block content %}{% endblock %}</div>
-    <div id="footer">{% block footer %}<br><a href="{{ url_for('landing') }}">Landing Page</a>{% endblock %}</div>
   </body>
   {% block external_js %}{% endblock %}
 </html>
