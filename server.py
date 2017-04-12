@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for
 from flask.ext.api import status
-from databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction, getTransactionHistory, get_account_balances,DATE_FORMAT,pay_tax_amount
+from databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction, getTransactionHistory, get_account_balances,DATE_FORMAT,pay_tax_amount,get_reporting_info
 import datetime
 import json
 
@@ -37,7 +37,7 @@ account
 @app.route('/salary',methods=['POST'])
 def salary():
 	data = get_data_from_request(request)
-	if data['amount'] and data['department'] and data['userID'] and data['name']:
+	if data['amount'] and data['department'] and data['userID']:
 		try:
 			amount = float(data['amount'])
 			userId = int(data['userID'])
@@ -46,13 +46,12 @@ def salary():
 		try:
 			tag = data['tag']
 		except:
-			tag = "ssalary"
+			tag = "salary"
 		department = data['department']
 		if amount <= 0 or userId < 0 and not department in ACCEPTED_DEPARTMENTS:
 			return malformed_request()
 		taxAmount = amount * SALARY_TAX
 		amount += taxAmount
-		name = data['name']
 		payload = {'date':get_date(),
 		'postTaxAmount':amount,'department':department,
 		'taxAmount':taxAmount,'userId':userId,'tag':tag}
@@ -143,6 +142,14 @@ def pay_tax():
 		return malformed_request()
 	pay_tax_amount(None,amount)
 	return ok_status()
+
+"""
+Internal API endpoint for getting data
+necessary for Reporting
+"""
+@app.route('/reporting',methods=['GET'])
+def reporting():
+	return get_reporting_info()
 	
 """
 Helper function to get the current date as a string

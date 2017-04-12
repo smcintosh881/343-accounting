@@ -172,6 +172,27 @@ def getTransactionHistory():
 	transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'],DATE_FORMAT)),reverse=False)
 	return json.dumps(transactions)
 
+"""
+Returns a json object with all
+transactions, accounts, and their
+respective information
+"""
+def get_reporting_info():
+	db = get_db()
+	salesTransactions = get_all_from_table(db['SalesTransactions'])
+	salaryTransactions = get_all_from_table(db['SalaryTransactions'])
+	inventoryTransactions = get_all_from_table(db['InventoryTransactions'])
+	taxTransactions = get_all_from_table(db['TaxTransactions'])
+	accounts = get_all_from_table(db['Accounts'])
+	info ={
+		'accounts':accounts,
+		'inventoryTransactions':inventoryTransactions,
+		'salaryTransactions':salaryTransactions,
+		'salesTransactions':salesTransactions,
+		'taxTransactions':taxTransactions
+	}
+	return json.dumps(info)
+
 def get_account_balances():
 	accounts = []
 	db = get_db()
@@ -186,3 +207,13 @@ def add_id_and_account_to_payload(payload,pk):
 	payload['transactionId'] = pk
 	if 'accountId' not in payload.keys():
 		payload['accountId']=MAIN_ACCOUNT_ID
+
+"""
+Helper function to get all
+records from a table in a list
+"""
+def get_all_from_table(table):
+	records = []
+	for i in table:
+		records.append(i)
+	return records
