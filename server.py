@@ -209,5 +209,9 @@ def sale_ui():
 def history_ui():
 	return render_template('history.html')
 
+@app.route(UI_ROUTE_PREFIX + '/reporting')
+def reporting_ui():
+	return render_template('reporting.html')
+
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=5000)
