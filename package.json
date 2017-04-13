@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel ui --presets es2015,react --out-dir static/scripts/compiled_jsx"
+    "build": "babel ui --presets es2015,react --out-dir static/scripts/compiled_jsx",
+    "watch": "babel ui --watch --presets es2015,react --out-dir static/scripts/compiled_jsx"
   },
   "repository": {
     "type": "git",
