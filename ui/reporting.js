@@ -67,6 +67,8 @@ class PayTaxForm extends React.Component {
     }
     render() {
         return (
+          <div>
+            <h1>Pay Taxes</h1>
             <form onSubmit={this.handleSubmit}>
                 <label>
                     Amount<br/>
@@ -74,6 +76,7 @@ class PayTaxForm extends React.Component {
                 </label>
                 <input type="submit" value="submit"/>
             </form>
+          </div>
         )
     }
 }
