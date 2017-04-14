@@ -47,7 +47,7 @@ class ExampleChart extends React.Component {
 //PayTaxForm, used for paying off taxes
 
 const payTaxFormInitialState = {
-    amount : null
+    amount : 0
 };
 
 class PayTaxForm extends React.Component {
