@@ -8,5 +8,5 @@ function sendRequest(url, method, requestData, callback) {
       }
     };
     xmlHttp.open(method, url, true);
-    xmlHttp.send(requestData ? requestData: null);
+    xmlHttp.send(requestData ? JSON.stringify(requestData): null);
 }

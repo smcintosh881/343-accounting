@@ -35,7 +35,7 @@ sendRequest('/reporting', 'GET', null, function (data) {
     console.log(data)
 });
 
-class MyComponent extends React.Component {
+class ExampleChart extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -44,7 +44,44 @@ class MyComponent extends React.Component {
     }
 }
 
+//PayTaxForm, used for paying off taxes
+
+const payTaxFormInitialState = {
+    amount : null
+};
+
+class PayTaxForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.state = payTaxFormInitialState;
+    }
+    handleChange(event) {
+        this.setState({[event.target.name]: isNaN(event.target.value) ? event.target.value : Number(event.target.value)});
+    }
+    handleSubmit(event) {
+        event.preventDefault();
+        sendRequest('/paytax', 'POST', {amount: this.state.amount}, null);
+        this.setState(payTaxFormInitialState);
+    }
+    render() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <label>
+                    Amount<br/>
+                    <input name="amount" title="amount" type="number" value={this.state.amount} onChange={this.handleChange}/><br/>
+                </label>
+                <input type="submit" value="submit"/>
+            </form>
+        )
+    }
+}
+
 ReactDOM.render(
-    React.createElement(MyComponent),
+    <div>
+        <ExampleChart/>
+        <PayTaxForm/>
+    </div>,
     document.getElementById('content')
 );
