@@ -120,6 +120,50 @@ class ServerTester(unittest.TestCase):
 
         self.assertEqual(response2.status_code, 200)
 
+    def test_paytax_tabe_updated(self):
+        self.reset_database()
+        taxPayment = 314159.15
+        startingTax =  535897.25
+        data = dict(id=2, balance = startingTax)
+        self.accountsTable.update(data, ['id'])
+
+        s = requests.Session()
+        data = "{{\"amount\": {}}}".format(taxPayment)
+        s.post("http://127.0.0.1:5000/paytax", data=data)
+
+        taxBalance = self.accountsTable.find_one(id = 2)['balance']
+        self.assertEqual(taxBalance, startingTax - taxPayment)
+        accountBlance = self.accountsTable.find_one(id = 1)['balance']
+        self.assertEqual(accountBlance, self.startingBalance - taxPayment)
+
+    def test_paytax_invalid_amounts(self):
+        self.reset_database()
+        startingTax = 535897.25
+        data = dict(id=2, balance=startingTax)
+        self.accountsTable.update(data, ['id'])
+
+        s = requests.Session()
+
+        #pay more tax than we owe
+        data = "{{\"amount\": {}}}".format(startingTax + 1)
+        response = s.post("http://127.0.0.1:5000/paytax", data=data)
+        self.assertEqual(response.status_code, 400)
+
+        #invalid amount
+        data = "{{\"amount\": {}}}".format('abc')
+        response = s.post("http://127.0.0.1:5000/paytax", data=data)
+        self.assertEqual(response.status_code, 400)
+
+        # negative amount
+        data = "{{\"amount\": {}}}".format(-1234)
+        response = s.post("http://127.0.0.1:5000/paytax", data=data)
+        self.assertEqual(response.status_code, 400)
+
+        taxBalance = self.accountsTable.find_one(id=2)['balance']
+        self.assertEqual(taxBalance, startingTax)
+        accountBlance = self.accountsTable.find_one(id=1)['balance']
+        self.assertEqual(accountBlance, self.startingBalance)
+
 def main():
     unittest.main()
 
