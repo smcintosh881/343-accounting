@@ -77,7 +77,7 @@ def sale():
 			transactionType = data['transactionType'].lower()
 		except:
 			return malformed_request()
-		if preTaxAmount <= 0 or taxAmount <= 0 or salesId < 0 or (transactionType != "deposit" and transactionType != "withdrawal"):
+		if preTaxAmount <= 0 or taxAmount < 0 or salesId < 0 or (transactionType != "deposit" and transactionType != "withdrawal"):
 			return malformed_request()
 		amount = preTaxAmount + taxAmount
 		payload = {'date': get_date(),
