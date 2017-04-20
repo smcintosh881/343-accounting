@@ -18,6 +18,8 @@ def withdraw_amount(db,amount,account_id=MAIN_ACCOUNT_ID):
 	table = db['Accounts']
 	account = table.find_one(name='main')
 	bal = account['balance'] - amount
+	if bal <= 0:
+		return False
 	table.update(dict(name='main',balance=bal),['name'])
 
 """
@@ -57,8 +59,9 @@ def pay_tax_amount(db,amount,register=True,accountId=1):
 		db = get_db()
 	table = db['Accounts']
 	account = table.find_one(name="tax")
-	withdraw_amount(db,amount)
 	bal = account['balance'] - amount
+	if bal < 0 or withdraw_amount(db,amount) == False:
+		return False
 	if register:
 		make_tax_transaction(db,amount)
 	table.update(dict(name='tax',balance=bal),['name'])
@@ -102,9 +105,10 @@ def inventoryTransaction(payload):
 	db = get_db()
 	table = db['InventoryTransactions']
 	pk = len(table)
-	add_id_and_account_to_payload(payload,pk)
+	add_id_and_account_to_payload(payload,pk)	
+	if withdraw_amount(db,payload['postTaxAmount']-payload['taxAmount']) == False:
+		return False
 	table.insert(payload)
-	withdraw_amount(db,payload['postTaxAmount']-payload['taxAmount'])
 	register_tax_amount(db,payload['taxAmount'])
 
 """
@@ -115,13 +119,15 @@ def salesTransaction(payload):
 	table = db['SalesTransactions']
 	pk = len(table)
 	add_id_and_account_to_payload(payload,pk)
-	table.insert(payload)
 	action = withdraw_amount if payload['transactionType'] == 'withdrawal' else deposit_amount
-	action(db,payload['postTaxAmount']-payload['taxAmount'])
+	if action(db,payload['postTaxAmount']-payload['taxAmount']) == False:
+		return False	
 	if payload['transactionType'] == 'withdrawal':
-		pay_tax_amount(db,payload['taxAmount'],register=False)
+		if pay_tax_amount(db,payload['taxAmount'],register=False) == False:
+			return False
 	else:
 		register_tax_amount(db,payload['taxAmount'])
+	table.insert(payload)
 
 	
 
@@ -133,10 +139,10 @@ def salaryTransaction(payload):
 	table = db['SalaryTransactions']
 	pk = len(table)
 	add_id_and_account_to_payload(payload,pk)
-	table.insert(payload)
-	withdraw_amount(db,payload['postTaxAmount']-payload['taxAmount'])
+	if withdraw_amount(db,payload['postTaxAmount']-payload['taxAmount']) == False:
+		return False
 	register_tax_amount(db,payload['taxAmount'])
-
+	table.insert(payload)
 
 def getTransactionHistory():
 	db = get_db()
