@@ -136,8 +136,10 @@ Internal API endpoint for paying taxes
 def pay_tax():
 	data = get_data_from_request(request)
 	try:
-		amount = int(data['amount'])
+		amount = float(data['amount'])
 	except:
+		return malformed_request()
+	if amount <= 0:
 		return malformed_request()
 	
 	return ok_status() if pay_tax_amount(None,amount) else malformed_request()
