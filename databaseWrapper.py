@@ -20,6 +20,7 @@ def withdraw_amount(db,amount,account_id=MAIN_ACCOUNT_ID):
 	bal = account['balance'] - amount
 	if bal <= 0:
 		return False
+		print  "amount too high"
 	table.update(dict(name='main',balance=bal),['name'])
 
 """
@@ -124,12 +125,10 @@ def salesTransaction(payload):
 		return False	
 	if payload['transactionType'] == 'withdrawal':
 		if pay_tax_amount(db,payload['taxAmount'],register=False) == False:
-			return False
+			withdraw_amount(db,payload['taxAmount'])
 	else:
 		register_tax_amount(db,payload['taxAmount'])
 	table.insert(payload)
-
-	
 
 """
 Creates a salaryTransaction with the data stored in payload

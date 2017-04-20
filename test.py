@@ -72,7 +72,7 @@ class ServerTester(unittest.TestCase):
         s = requests.Session()
         data = "{{\"preTaxAmount\": {}, \"taxAmount\": {},\"transactionType\": \"{}\",\"salesID\": {}}}".format(
             preTaxAmount, taxAmount, transactionsType, salesId)
-        s.post("http://127.0.0.1:5000/sale", data=data)
+        r = s.post("http://127.0.0.1:5000/sale", data=data)
 
         entry = self.saleTable.find_one(salesId = salesId)
         self.assertEqual(entry['postTaxAmount'], preTaxAmount + taxAmount)

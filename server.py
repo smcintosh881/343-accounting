@@ -55,7 +55,7 @@ def salary():
 		payload = {'date':get_date(),
 		'postTaxAmount':amount,'department':department,
 		'taxAmount':taxAmount,'userId':userId,'tag':tag}
-		return ok_status() if salaryTransaction(payload) else malformed_request() 
+		return malformed_request() if salaryTransaction(payload) == False else ok_status() 
 	return malformed_request()
 
 """
@@ -82,8 +82,8 @@ def sale():
 		payload = {'date': get_date(),
 		'postTaxAmount':amount,'taxAmount':taxAmount,
 		'transactionType':transactionType,'salesId':salesId}
-		salesTransaction(payload)
-		return ok_status()
+		return malformed_request() if salesTransaction(payload) == False else ok_status()
+		
 	return malformed_request()
 
 """
@@ -107,7 +107,7 @@ def inventory():
 	'postTaxAmount':postTaxAmount,
 	'taxAmount': taxAmount}
 	
-	return ok_status() if inventoryTransaction(payload) else malformed_request()
+	return malformed_request() if inventoryTransaction(payload)==False else ok_status()
 
 
 # Internal APIs
@@ -142,7 +142,7 @@ def pay_tax():
 	if amount <= 0:
 		return malformed_request()
 	
-	return ok_status() if pay_tax_amount(None,amount) else malformed_request()
+	return malformed_request() if pay_tax_amount(None,amount)==False else ok_status()
 
 """
 Internal API endpoint for getting data
