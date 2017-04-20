@@ -1,6 +1,6 @@
 var LineChart = window['react-chartjs'].Line;
 
-var data = {
+var chartdata = {
     labels: ["January", "February", "March", "April", "May", "June", "July"],
     datasets: [
         {
@@ -36,7 +36,13 @@ var n_steps = 10;
 var xmlHttp = new XMLHttpRequest();
 xmlHttp.onreadystatechange = function () {
   if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-      transaction_history = JSON.parse(xmlHttp.responseText);
+      
+  }
+};
+
+sendRequest('/reporting', 'GET', null, function (data) {
+    console.log(data)
+    transaction_history = JSON.parse(data);
       var transactions = [];
       var i;
       var sales = transaction_history.salesTransactions;
@@ -83,19 +89,28 @@ xmlHttp.onreadystatechange = function () {
           y.push(transactions[i].balance);
 	  x.push(transactions[i].date);
       }
+      if(transactions.length == 0){
+	chartdata.labels = y;
+        chartdata.datasets[0].data = x;
+        ReactDOM.render(
+        React.createElement(ExampleChart),
+        document.getElementById('content'));
+	return;
+      }
       //transactions.reverse();
       var splitAmount = (transactions[transactions.length-1].date - transactions[0].date)/n_steps;
       var temp_bucket = transactions[0];
       var buckets = [];
+      buckets.push(transactions[0].date)
       for(i = 0; i<n_steps; i++){
-          buckets.push(transactions[i].date+splitAmount);
+          buckets.push(transactions[0].date+ ((i+1)*splitAmount));
       }
       var j = 0;
       x = [];
       y = [];
       for(i=0; i<buckets.length; i++){
 	  var curVal = 0;
-          while(transactions[j].date < buckets[i] && j < transactions.length){
+          while(j < transactions.length && transactions[j].date <= buckets[i]){
 		curVal = transactions[j].balance;
 		j++;
 	  }
@@ -105,30 +120,64 @@ xmlHttp.onreadystatechange = function () {
 	  x.push(curVal);
 	  y.push((new Date(buckets[i])).toLocaleDateString());
       }
-      data.labels = y;
-      data.datasets[0].data = x;
+      chartdata.labels = y;
+      chartdata.datasets[0].data = x;
       ReactDOM.render(
-      React.createElement(MyComponent),
+      React.createElement(ExampleChart),
       document.getElementById('content')
       );
-      
-  }
-};
-xmlHttp.open("GET", '/reporting', true);
-xmlHttp.send(null);
+});
 
-class MyComponent extends React.Component {
+class ExampleChart extends React.Component {
     constructor(props) {
         super(props);
     }
     render() {
-        return <LineChart data={data} options={options} width="600" height="250" redraw/>;
+        return <LineChart data={chartdata} options={options} width="600" height="250" redraw/>;
     }
 }
 
+//PayTaxForm, used for paying off taxes
 
+const payTaxFormInitialState = {
+    amount : 0
+};
+
+class PayTaxForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.state = payTaxFormInitialState;
+    }
+    handleChange(event) {
+        this.setState({[event.target.name]: isNaN(event.target.value) ? event.target.value : Number(event.target.value)});
+    }
+    handleSubmit(event) {
+        event.preventDefault();
+        sendRequest('/paytax', 'POST', {amount: this.state.amount}, null);
+        this.setState(payTaxFormInitialState);
+    }
+    render() {
+        return (
+          <div>
+            <h1>Pay Taxes</h1>
+            <form onSubmit={this.handleSubmit}>
+                <label>
+                    Amount<br/>
+                    <input name="amount" title="amount" type="number" value={this.state.amount} onChange={this.handleChange}/><br/>
+                </label>
+                <input type="submit" value="submit"/>
+            </form>
+          </div>
+        )
+    }
+}
 
 ReactDOM.render(
-    React.createElement(MyComponent),
+    <div>
+        <ExampleChart/>
+        <PayTaxForm/>
+    </div>,
     document.getElementById('content')
 );
