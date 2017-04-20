@@ -2,6 +2,7 @@ import datetime
 import dataset
 import json
 import time
+import sys
 
 MAIN_ACCOUNT_ID = 1
 DATE_FORMAT = "%B %d %Y %H:%M:%S:%f"
@@ -17,7 +18,11 @@ id by default
 def withdraw_amount(db,amount,account_id=MAIN_ACCOUNT_ID):
 	table = db['Accounts']
 	account = table.find_one(name='main')
+	if amount > sys.maxint:
+		amount = sys.maxint
 	bal = account['balance'] - amount
+	if bal < (-sys.maxint - 1):
+		bal = -sys.maxint - 1
 	table.update(dict(name='main',balance=bal),['name'])
 
 """
@@ -30,8 +35,12 @@ id by default
 """
 def deposit_amount(db,amount,account_id=MAIN_ACCOUNT_ID):
 	table = db['Accounts']
+	if amount > sys.maxint:
+		amount = sys.maxint
 	account = table.find_one(name='main')
 	bal = account['balance'] + amount
+	if bal > sys.maxint:
+		bal = sys.maxint
 	table.update(dict(name='main',balance=bal),['name'])
 
 """
