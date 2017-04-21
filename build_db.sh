@@ -8,6 +8,7 @@ expect <<- DONE
 	send -- "\r"
 	expect eof
 DONE
+psql -U accounting -h 127.0.0.1 -f pschema.schema enterprise
 
 echo "done"
 
