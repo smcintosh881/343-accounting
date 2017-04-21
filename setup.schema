@@ -1,0 +1,4 @@
+DROP DATABASE enterprise;
+DROP ROLE accounting;
+CREATE ROLE accounting LOGIN PASSWORD 'Lpb3LMDMfaBd63bY3NayRA8ukVWscx'; 
+CREATE DATABASE enterprise WITH OWNER = accounting;
