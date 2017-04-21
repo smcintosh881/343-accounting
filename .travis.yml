@@ -6,6 +6,8 @@ python:
 #install all deps
 install:  "pip2.7 install -r requirements.txt"
 
+sudo: required
+
 #run tests
 script:
     - sh build_db.sh
