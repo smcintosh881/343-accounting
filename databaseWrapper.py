@@ -68,7 +68,7 @@ def pay_tax_amount(db,amount,register=True,accountId=1):
 	table.update(dict(name='tax',balance=bal),['name'])
 	table = db['taxpayments']	
 	taxPayment = {
-		'id': len(table),
+		'paymentid': len(table),
 		'date' : datetime.datetime.now().strftime(DATE_FORMAT),
 		'amount' : amount,
 		'accountid' : accountId
@@ -85,13 +85,12 @@ def make_tax_transaction(db,amount):
 	table = db['taxtransactions']
 	pk = len(table)
 	payload = {
+		'transactionid':pk,
 		'date':datetime.datetime.now().strftime(DATE_FORMAT),
-		'id':pk,
 		'amount':amount
 	}
+	print payload
 	table.insert(payload)
-
-
 
 """
 Helper function to get an instance of the database

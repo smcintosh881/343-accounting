@@ -122,7 +122,7 @@ class ServerTester(unittest.TestCase):
     def test_paytax_tabe_updated(self):
         self.reset_database()
         taxPayment = 314159.15
-        startingTax =  535897.25
+        startingTax = 535897.25
         data = dict(id=2, balance = startingTax)
         self.accountsTable.update(data, ['id'])
 
@@ -130,9 +130,9 @@ class ServerTester(unittest.TestCase):
         data = "{{\"amount\": {}}}".format(taxPayment)
         s.post("http://127.0.0.1:5000/paytax", data=data)
 
-        taxBalance = self.accountsTable.find_one(id = 2)['balance']
-        self.assertEqual(taxBalance, startingTax - taxPayment)
-        accountBlance = self.accountsTable.find_one(id = 1)['balance']
+        taxBalance = float(self.accountsTable.find_one(id = 2)['balance'])
+        self.assertEqual(taxBalance, round((startingTax - taxPayment),2))
+        accountBlance = float(self.accountsTable.find_one(id = 1)['balance'])
         self.assertEqual(accountBlance, self.startingBalance - taxPayment)
 
     def test_paytax_invalid_amounts(self):
