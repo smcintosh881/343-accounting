@@ -53,10 +53,9 @@ def salary():
 		taxAmount = amount * SALARY_TAX
 		amount += taxAmount
 		payload = {'date':get_date(),
-		'postTaxAmount':amount,'department':department,
-		'taxAmount':taxAmount,'userId':userId,'tag':tag}
-		salaryTransaction(payload)
-		return ok_status()
+		'posttaxamount':amount,'department':department,
+		'taxamount':taxAmount,'userid':userId,'tag':tag}
+		return malformed_request() if salaryTransaction(payload) == False else ok_status() 
 	return malformed_request()
 
 """
@@ -81,10 +80,10 @@ def sale():
 			return malformed_request()
 		amount = preTaxAmount + taxAmount
 		payload = {'date': get_date(),
-		'postTaxAmount':amount,'taxAmount':taxAmount,
-		'transactionType':transactionType,'salesId':salesId}
-		salesTransaction(payload)
-		return ok_status()
+		'posttaxamount':amount,'taxamount':taxAmount,
+		'transactiontype':transactionType,'salesid':salesId}
+		return malformed_request() if salesTransaction(payload) == False else ok_status()
+		
 	return malformed_request()
 
 """
@@ -105,10 +104,10 @@ def inventory():
 	taxAmount = amount*INVENTORY_TAX
 	postTaxAmount = amount+taxAmount
 	payload = {'date':get_date(),
-	'postTaxAmount':postTaxAmount,
-	'taxAmount': taxAmount}
-	inventoryTransaction(payload)
-	return ok_status()
+	'posttaxamount':postTaxAmount,
+	'taxamount':taxAmount}
+	
+	return malformed_request() if inventoryTransaction(payload)==False else ok_status()
 
 
 # Internal APIs
@@ -137,11 +136,13 @@ Internal API endpoint for paying taxes
 def pay_tax():
 	data = get_data_from_request(request)
 	try:
-		amount = int(data['amount'])
+		amount = float(data['amount'])
 	except:
 		return malformed_request()
-	pay_tax_amount(None,amount)
-	return ok_status()
+	if amount <= 0:
+		return malformed_request()
+	
+	return malformed_request() if pay_tax_amount(None,amount)==False else ok_status()
 
 """
 Internal API endpoint for getting data
