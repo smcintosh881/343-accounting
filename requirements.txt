@@ -2,3 +2,4 @@ Flask
 dataset
 Flask-API
 requests
+psycopg2

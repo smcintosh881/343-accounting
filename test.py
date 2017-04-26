@@ -7,10 +7,10 @@ import time
 
 class ServerTester(unittest.TestCase):
     db = get_db()
-    salaryTable = db['SalaryTransactions']
-    saleTable = db['SalesTransactions']
-    inventoryTable = db['InventoryTransactions']
-    accountsTable = db['Accounts']
+    salaryTable = db['salarytransactions']
+    saleTable = db['salestransactions']
+    inventoryTable = db['inventorytransactions']
+    accountsTable = db['accounts']
     startingBalance = 1000000.0
 
     def reset_database(self):
@@ -33,20 +33,19 @@ class ServerTester(unittest.TestCase):
         s = requests.Session()
         data = "{{\"amount\": {},\"department\": \"{}\",\"userID\": {},\"name\": \"{}\"}}".format(amount, department, userId, name)
         s.post("http://127.0.0.1:5000/salary",data=data)
-
-        entry = self.salaryTable.find_one(userId = userId)
-        self.assertEqual(entry['postTaxAmount'] - entry['taxAmount'], amount)
+        entry = self.salaryTable.find_one(userid = userId)
+        self.assertEqual(entry['posttaxamount'] - entry['taxamount'], amount)
         self.assertEqual(entry['department'], department)
-        self.assertEqual(entry['userId'], userId)
+        self.assertEqual(entry['userid'], userId)
         self.assertEqual(self.salaryTable.count(), 1)
         balance = self.accountsTable.find_one(id = 1)['balance']
-        self.assertEqual(entry['postTaxAmount'] - entry['taxAmount'], self.startingBalance - balance)
+        self.assertEqual(entry['posttaxamount'] - entry['taxamount'], self.startingBalance - float(balance))
 
     def test_saledeposit_table_updated(self):
         self.reset_database()
         preTaxAmount = 100.0
         taxAmount = 7.0
-        transactionsType = "Deposit"
+        transactionsType = "deposit"
         salesId = 123
 
         s = requests.Session()
@@ -54,13 +53,13 @@ class ServerTester(unittest.TestCase):
             preTaxAmount, taxAmount, transactionsType, salesId)
         r = s.post("http://127.0.0.1:5000/sale", data=data)
 
-        entry = self.saleTable.find_one(salesId = salesId)
-        self.assertEqual(entry['postTaxAmount'], preTaxAmount + taxAmount)
-        self.assertEqual(entry['taxAmount'], taxAmount)
-        self.assertEqual(entry['transactionType'], transactionsType.lower())
-        self.assertEqual(entry['salesId'], salesId)
+        entry = self.saleTable.find_one(salesid = salesId)
+        self.assertEqual(entry['posttaxamount'], preTaxAmount + taxAmount)
+        self.assertEqual(entry['taxamount'], taxAmount)
+        self.assertEqual(entry['transactiontype'], transactionsType)
+        self.assertEqual(entry['salesid'], salesId)
         balance = self.accountsTable.find_one(id=1)['balance']
-        self.assertEqual(self.startingBalance + (entry['postTaxAmount'] - entry['taxAmount']), balance)
+        self.assertEqual(self.startingBalance + float(entry['posttaxamount'] - entry['taxamount']), balance)
 
     def test_salewithdrawal_table_updated(self):
         self.reset_database()
@@ -72,15 +71,15 @@ class ServerTester(unittest.TestCase):
         s = requests.Session()
         data = "{{\"preTaxAmount\": {}, \"taxAmount\": {},\"transactionType\": \"{}\",\"salesID\": {}}}".format(
             preTaxAmount, taxAmount, transactionsType, salesId)
-        s.post("http://127.0.0.1:5000/sale", data=data)
+        r = s.post("http://127.0.0.1:5000/sale", data=data)
 
-        entry = self.saleTable.find_one(salesId = salesId)
-        self.assertEqual(entry['postTaxAmount'], preTaxAmount + taxAmount)
-        self.assertEqual(entry['taxAmount'], taxAmount)
-        self.assertEqual(entry['transactionType'], transactionsType.lower())
-        self.assertEqual(entry['salesId'], salesId)
+        entry = self.saleTable.find_one(salesid = salesId)
+        self.assertEqual(float(entry['posttaxamount']), preTaxAmount + taxAmount)
+        self.assertEqual(float(entry['taxamount']), taxAmount)
+        self.assertEqual(entry['transactiontype'], transactionsType)
+        self.assertEqual(entry['salesid'], salesId)
         balance = self.accountsTable.find_one(id=1)['balance']
-        self.assertEqual(self.startingBalance - entry['postTaxAmount'], balance)
+        self.assertEqual(self.startingBalance - float(entry['posttaxamount']), float(balance))
 
     def test_inventory_table_updated(self):
         self.reset_database()
@@ -90,10 +89,10 @@ class ServerTester(unittest.TestCase):
         data = "{{\"amount\": {}}}".format(amount)
         s.post("http://127.0.0.1:5000/inventory", data=data)
 
-        entry = self.inventoryTable.find_one(transactionId = 0)
-        self.assertEqual(entry['postTaxAmount'] - entry['taxAmount'], amount)
+        entry = self.inventoryTable.find_one(transactionid = 0)
+        self.assertEqual(float(entry['posttaxamount'] - entry['taxamount']), amount)
         balance = self.accountsTable.find_one(id=1)['balance']
-        self.assertEqual(self.startingBalance - (entry['postTaxAmount'] - entry['taxAmount']), balance)
+        self.assertEqual(self.startingBalance - float(entry['posttaxamount'] - entry['taxamount']), float(balance))
 
     def test_sales_invalid_transaction_type(self):
         self.reset_database()
@@ -108,7 +107,7 @@ class ServerTester(unittest.TestCase):
         response = s.post("http://127.0.0.1:5000/sale", data=data)
 
         self.assertEqual(response.status_code, 400)
-        entry = self.saleTable.find_one(salesId=salesId)
+        entry = self.saleTable.find_one(salesid=salesId)
         self.assertIsNone(entry)
         balance = self.accountsTable.find_one(id=1)['balance']
         self.assertEqual(balance, self.startingBalance)
