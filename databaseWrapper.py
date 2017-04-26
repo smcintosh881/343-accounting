@@ -15,13 +15,13 @@ Withdraws a specified amount from the specified account
 id by default
 """
 def withdraw_amount(db,amount,account_id=MAIN_ACCOUNT_ID):
-	table = db['accounts'.lower()]
+	table = db['accounts']
 	account = table.find_one(name='main')
-	bal = float(account['balance'.lower()]) - amount
+	bal = float(account['balance']) - amount
 	if bal <= 0:
 		return False
 		print  "amount too high"
-	table.update(dict(name='main',balance=bal),['name'.lower()])
+	table.update(dict(name='main',balance=bal),['name'])
 
 """
 Deposits a specified amount into the specified account
@@ -32,10 +32,10 @@ Deposits a specified amount into the specified account
 id by default
 """
 def deposit_amount(db,amount,account_id=MAIN_ACCOUNT_ID):
-	table = db['accounts'.lower()]
+	table = db['accounts']
 	account = table.find_one(name='main')
-	bal = float(account['balance'.lower()]) + amount
-	table.update(dict(name='main',balance=bal),['name'.lower()])
+	bal = float(account['balance']) + amount
+	table.update(dict(name='main',balance=bal),['name'])
 
 """
 Register an amount of taxes owed
@@ -44,10 +44,10 @@ Register an amount of taxes owed
 @param amount: (float) amount of owed taxes to register into the tax account
 """
 def register_tax_amount(db,amount):
-	table = db['accounts'.lower()]
+	table = db['accounts']
 	account = table.find_one(name="tax")
-	bal = float(account['balance'.lower()]) + amount
-	table.update(dict(name='tax',balance=bal),['name'.lower()])
+	bal = float(account['balance']) + amount
+	table.update(dict(name='tax',balance=bal),['name'])
 
 """
 Pay a specified amount of owed taxes
@@ -58,20 +58,20 @@ Pay a specified amount of owed taxes
 def pay_tax_amount(db,amount,register=True,accountId=1):
 	if db is None:
 		db = get_db()
-	table = db['accounts'.lower()]
+	table = db['accounts']
 	account = table.find_one(name="tax")
-	bal = float(account['balance'.lower()]) - amount
+	bal = float(account['balance']) - amount
 	if bal < 0 or withdraw_amount(db,amount) == False:
 		return False
 	if register:
 		make_tax_transaction(db,amount)
-	table.update(dict(name='tax',balance=bal),['name'.lower()])
-	table = db['taxpayments'.lower()]	
+	table.update(dict(name='tax',balance=bal),['name'])
+	table = db['taxpayments']	
 	taxPayment = {
 		'id': len(table),
 		'date' : datetime.datetime.now().strftime(DATE_FORMAT),
 		'amount' : amount,
-		'accountId' : accountId
+		'accountid' : accountId
 	}
 	table.insert(taxPayment)
 
@@ -82,7 +82,7 @@ Log a tax payment in the database
 @param amount: (float) amount of tax paid in transaction
 """
 def make_tax_transaction(db,amount):
-	table = db['TaxTransactions'.lower()]
+	table = db['taxtransactions']
 	pk = len(table)
 	payload = {
 		'date':datetime.datetime.now().strftime(DATE_FORMAT),
@@ -104,30 +104,30 @@ Creates an inventory transaction with data stored in payload
 """
 def inventoryTransaction(payload):
 	db = get_db()
-	table = db['inventorytransactions'.lower()]
+	table = db['inventorytransactions']
 	pk = len(table)
 	add_id_and_account_to_payload(payload,pk)	
-	if withdraw_amount(db,payload['postTaxAmount'.lower()]-payload['taxAmount'.lower()]) == False:
+	if withdraw_amount(db,payload['posttaxamount']-payload['taxamount']) == False:
 		return False
 	table.insert(payload)
-	register_tax_amount(db,payload['taxAmount'.lower()])
+	register_tax_amount(db,payload['taxamount'])
 
 """
 Creates a salesTransaction with the data stored in payload
 """
 def salesTransaction(payload):
 	db = get_db()
-	table = db['salestransactions'.lower()]
+	table = db['salestransactions']
 	pk = len(table)
 	add_id_and_account_to_payload(payload,pk)
-	action = withdraw_amount if payload['transactionType'.lower()] == 'withdrawal' else deposit_amount
-	if action(db,payload['postTaxAmount'.lower()]-payload['taxAmount'.lower()]) == False:
+	action = withdraw_amount if payload['transactiontype'] == 'withdrawal' else deposit_amount
+	if action(db,payload['posttaxamount']-payload['taxamount']) == False:
 		return False	
-	if payload['transactionType'.lower()] == 'withdrawal':
-		if pay_tax_amount(db,payload['taxAmount'.lower()],register=False) == False:
-			withdraw_amount(db,payload['taxAmount'.lower()])
+	if payload['transactiontype'] == 'withdrawal':
+		if pay_tax_amount(db,payload['taxamount'],register=False) == False:
+			withdraw_amount(db,payload['taxamount'])
 	else:
-		register_tax_amount(db,payload['taxAmount'.lower()])
+		register_tax_amount(db,payload['taxamount'])
 	table.insert(payload)
 
 """
@@ -135,46 +135,46 @@ Creates a salaryTransaction with the data stored in payload
 """
 def salaryTransaction(payload):
 	db = get_db()
-	table = db['salarytransactions'.lower()]
+	table = db['salarytransactions']
 	pk = len(table)
 	add_id_and_account_to_payload(payload,pk)
-	if withdraw_amount(db,payload['postTaxAmount'.lower()]-payload['taxAmount'.lower()]) == False:
+	if withdraw_amount(db,payload['posttaxamount']-payload['taxamount']) == False:
 		return False
-	register_tax_amount(db,payload['taxAmount'.lower()])
+	register_tax_amount(db,payload['taxamount'])
 	table.insert(payload)
 
 def getTransactionHistory():
 	db = get_db()
-	table = db['salarytransactions'.lower()]
+	table = db['salarytransactions']
 	transactions = []
 	for i in table.all():
 		t = {}
-		t['date'.lower()] = i['date'.lower()]
-		t['amount'.lower()] = (i['postTaxAmount'.lower()] - i['taxAmount'.lower()]) * -1
-		t['account'.lower()] = i['accountId'.lower()]
+		t['date'] = i['date']
+		t['amount'] = (i['posttaxamount'] - i['taxamount']) * -1
+		t['account'] = i['accountid']
 		transactions.append(t)
-	table = db['salestransactions'.lower()]
+	table = db['salestransactions']
 	for i in table.all():
 		t = {}
-		t['date'.lower()] = i['date'.lower()]
-		t['amount'.lower()] = (i['postTaxAmount'.lower()] - i['taxAmount'.lower()]) * (-1 if i['transactionType'.lower()] == 'withdrawal' else 1)
-		t['account'.lower()] = i['accountId'.lower()]
+		t['date'] = i['date']
+		t['amount'] = (i['posttaxamount'] - i['taxamount']) * (-1 if i['transactiontype'] == 'withdrawal' else 1)
+		t['account'] = i['accountid']
 		transactions.append(t)
-	table = db['inventorytransactions'.lower()]
+	table = db['inventorytransactions']
 	for i in table.all():
 		t = {}
-		t['date'.lower()] = i['date'.lower()]
-		t['amount'.lower()] = (i['postTaxAmount'.lower()] - i['taxAmount'.lower()]) * -1
-		t['account'.lower()] = i['accountId'.lower()]
+		t['date'] = i['date']
+		t['amount'] = (i['posttaxamount'] - i['taxamount']) * -1
+		t['account'] = i['accountid']
 		transactions.append(t)
-	table = db['inventorytransactions'.lower()]
+	table = db['inventorytransactions']
 	for i in table.all():
 		t = {}
-		t['date'.lower()] = i['date'.lower()]
-		t['amount'.lower()] = i['amount'.lower()] * -1
-		t['account'.lower()] = i['accountId'.lower()]
+		t['date'] = i['date']
+		t['amount'] = i['amount'] * -1
+		t['account'] = i['accountid']
 		transactions.append(t)
-	transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'.lower()],DATE_FORMAT)),reverse=False)
+	transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'],DATE_FORMAT)),reverse=False)
 	return json.dumps(transactions)
 
 """
@@ -184,11 +184,11 @@ respective information
 """
 def get_reporting_info():
 	db = get_db()
-	salesTransactions = get_all_from_table(db['salestransactions'.lower()])
-	salaryTransactions = get_all_from_table(db['salarytransactions'.lower()])
-	inventoryTransactions = get_all_from_table(db['inventorytransactions'.lower()])
-	taxTransactions = get_all_from_table(db['taxtransactions'.lower()])
-	accounts = get_all_from_table(db['accounts'.lower()])
+	salesTransactions = get_all_from_table(db['salestransactions'])
+	salaryTransactions = get_all_from_table(db['salarytransactions'])
+	inventoryTransactions = get_all_from_table(db['inventorytransactions'])
+	taxTransactions = get_all_from_table(db['taxtransactions'])
+	accounts = get_all_from_table(db['accounts'])
 	info ={
 		'accounts':accounts,
 		'inventorytransactions':inventoryTransactions,
@@ -201,17 +201,17 @@ def get_reporting_info():
 def get_account_balances():
 	accounts = []
 	db = get_db()
-	for account in db['accounts'.lower()]:
+	for account in db['accounts']:
 		accounts.append({
-			'id': account['id'.lower()],
-			'balance': float(account['balance'.lower()])
+			'id': account['id'],
+			'balance': float(account['balance'])
 		})
 	return json.dumps(accounts)
 
 def add_id_and_account_to_payload(payload,pk):
-	payload['transactionId'.lower()] = pk
-	if 'accountId' not in payload.keys():
-		payload['accountId'.lower()]=MAIN_ACCOUNT_ID
+	payload['transactionid'] = pk
+	if 'accountid' not in payload.keys():
+		payload['accountid']=MAIN_ACCOUNT_ID
 
 """
 Helper function to get all

@@ -52,9 +52,9 @@ def salary():
 			return malformed_request()
 		taxAmount = amount * SALARY_TAX
 		amount += taxAmount
-		payload = {'date'.lower():get_date(),
-		'postTaxAmount'.lower():amount,'department'.lower():department,
-		'taxAmount'.lower():taxAmount,'userId'.lower():userId,'tag'.lower():tag}
+		payload = {'date':get_date(),
+		'posttaxamount':amount,'department':department,
+		'taxamount':taxAmount,'userid':userId,'tag':tag}
 		return malformed_request() if salaryTransaction(payload) == False else ok_status() 
 	return malformed_request()
 
@@ -79,9 +79,9 @@ def sale():
 		if preTaxAmount <= 0 or taxAmount <= 0 or salesId < 0 or (transactionType != "deposit" and transactionType != "withdrawal"):
 			return malformed_request()
 		amount = preTaxAmount + taxAmount
-		payload = {'date'.lower(): get_date(),
-		'postTaxAmount'.lower():amount,'taxAmount'.lower():taxAmount,
-		'transactionType'.lower():transactionType,'salesId'.lower():salesId}
+		payload = {'date': get_date(),
+		'posttaxamount':amount,'taxamount':taxAmount,
+		'transactiontype':transactionType,'salesid':salesId}
 		return malformed_request() if salesTransaction(payload) == False else ok_status()
 		
 	return malformed_request()
@@ -103,9 +103,9 @@ def inventory():
 		return malformed_request()
 	taxAmount = amount*INVENTORY_TAX
 	postTaxAmount = amount+taxAmount
-	payload = {'date'.lower():get_date(),
-	'postTaxAmount'.lower():postTaxAmount,
-	'taxAmount'.lower(): taxAmount}
+	payload = {'date':get_date(),
+	'posttaxamount':postTaxAmount,
+	'taxamount':taxAmount}
 	
 	return malformed_request() if inventoryTransaction(payload)==False else ok_status()
 
