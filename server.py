@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for
 from flask.ext.api import status
 from databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction, getTransactionHistory, get_account_balances,DATE_FORMAT,pay_tax_amount,get_reporting_info
+from authHelper import verify_token
 import datetime
 import json
 
@@ -22,8 +23,11 @@ ACCEPTED_DEPARTMENTS = [
 Landing page endpoint that contains links
 to Sales, Salary, Inventory and History
 """
-@app.route('/')
+@app.route('/', methods=['GET'])
 def landing():
+	token = request.args.get('token')
+	if token:
+		verify_token(token)
 	return render_template('landingpage.html')
 
 
