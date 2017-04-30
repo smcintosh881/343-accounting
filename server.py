@@ -1,11 +1,13 @@
 from flask import Flask, request, render_template, redirect, url_for
 from flask.ext.api import status
 from databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction, getTransactionHistory, get_account_balances,DATE_FORMAT,pay_tax_amount,get_reporting_info
-from authHelper import verify_token
+from authHelper import verify_token, login_required, login_user, get_current_user, logout_user
 import datetime
 import json
 
 app = Flask(__name__)
+# TODO: move secret key to external file, maybe config file?
+app.secret_key = 'crazy frog'
 
 UI_ROUTE_PREFIX = '/ui'
 INVENTORY_TAX = 0.08
@@ -26,8 +28,8 @@ to Sales, Salary, Inventory and History
 @app.route('/', methods=['GET'])
 def landing():
 	token = request.args.get('token')
-	if token:
-		verify_token(token)
+	if token and verify_token(token):
+		login_user(token)
 	return render_template('landingpage.html')
 
 
@@ -155,7 +157,15 @@ necessary for Reporting
 @app.route('/reporting',methods=['GET'])
 def reporting():
 	return get_reporting_info()
-	
+
+
+@app.route('/logout', methods=['GET'])
+@login_required
+def logout():
+	logout_user()
+	return redirect(url_for('landing'))
+
+
 """
 Helper function to get the current date as a string
 """
@@ -185,6 +195,7 @@ def get_data_from_request(request):
 
 
 @app.route(UI_ROUTE_PREFIX + '/salary', methods=['GET'])
+@login_required
 def salary_ui():
 	"""
 	A page that allows users to make salary transactions
@@ -194,6 +205,7 @@ def salary_ui():
 
 
 @app.route(UI_ROUTE_PREFIX + '/inventory')
+@login_required
 def inventory_ui():
 	"""
 	A page where a user can make an inventory transaction
@@ -203,6 +215,7 @@ def inventory_ui():
 
 
 @app.route(UI_ROUTE_PREFIX + '/sale')
+@login_required
 def sale_ui():
 	"""
 	A page where a user can log a sale or a return
@@ -211,6 +224,7 @@ def sale_ui():
 	return render_template('sale.html')
 
 @app.route(UI_ROUTE_PREFIX + '/history')
+@login_required
 def history_ui():
 	return render_template('history.html')
 
