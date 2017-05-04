@@ -150,7 +150,11 @@ necessary for Reporting
 """
 @app.route('/reporting',methods=['GET'])
 def reporting():
-	return get_reporting_info()
+	data = get_data_from_request(request)
+	order = 1
+	if data and data['order']:
+		order = data['order']
+	return getTransactionHistory(order=order)
 	
 """
 Helper function to get the current date as a string
