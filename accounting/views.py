@@ -168,7 +168,7 @@ necessary for Reporting
 """
 
 
-@app.route('/reporting', methods=['GET'])
+@app.route('/api/reporting', methods=['GET'])
 def reporting():
     data = get_data_from_request(request)
     order = 1

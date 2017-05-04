@@ -4,7 +4,8 @@ import {bindActionCreators} from 'redux';
 import BalanceBox from '../components/BalanceBox';
 import MainChart from '../components/MainChart';
 import PiChart from '../components/PiChart';
-import {fetchBalanceInitial} from '../actions/index'
+import RecentTransactions from '../components/RecentTransactions'
+import {fetchBalanceInitial, fetchTransactionsInitial} from '../actions/index'
 import {Menu, Grid, Segment} from 'semantic-ui-react';
 
 class Dashboard extends Component {
@@ -15,6 +16,7 @@ class Dashboard extends Component {
     componentDidMount() {
         const {dispatch} = this.props;
         dispatch(fetchBalanceInitial());
+        dispatch(fetchTransactionsInitial());
     }
 
     render() {
@@ -44,6 +46,13 @@ class Dashboard extends Component {
                         <Grid.Column width={5}>
                             <PiChart />
                         </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column width={1}/>
+                        <Grid.Column width={14}>
+                            <RecentTransactions />
+                        </Grid.Column>
+                        <Grid.Column width={1}/>
                     </Grid.Row>
                 </Grid>
             </Segment>

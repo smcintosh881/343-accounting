@@ -1,23 +1,33 @@
 import {combineReducers} from 'redux'
-import {
-    REQUEST_BALANCE, RECEIVE_BALANCE
-} from '../actions/index';
+import * as actions from '../actions/actionTypes'
+
 
 function accountBalance(state = {}, action) {
     switch (action.type) {
-        case RECEIVE_BALANCE:
+        case actions.RECEIVE_BALANCE:
             return Object.assign({}, state, {
                 balance: action.data[0].balance,
                 taxes: action.data[1].balance,
             });
-        case REQUEST_BALANCE:
+        case actions.REQUEST_BALANCE:
         default:
             return state
     }
 }
 
+function transactions(state = {}, action) {
+    switch (action.type) {
+        case actions.RECEIVE_TRANSACTIONS:
+            return Object.assign({}, state, {
+                temp: data
+            });
+        case actions.REQUEST_TRANSACTIONS:
+        default:
+            return state
+    }
+}
 const rootReducer = combineReducers({
-    accountBalance,
+    accountBalance, transactions
 });
 
 export default rootReducer

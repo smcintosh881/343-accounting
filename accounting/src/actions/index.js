@@ -1,33 +1,58 @@
-
 import fetch from 'isomorphic-fetch'
-
-export const REQUEST_BALANCE = 'REQUEST_BALANCE';
-export const RECEIVE_BALANCE = 'RECEIVE_BALANCE';
+import * as actions from './actionTypes'
 
 function requestBalance() {
-  return {
-    type: REQUEST_BALANCE
-  }
+    return {
+        type: actions.REQUEST_BALANCE
+    }
 }
 
 function receiveBalance(json) {
-  return {
-    type: RECEIVE_BALANCE,
-    data: json
-  }
+    return {
+        type: actions.RECEIVE_BALANCE,
+        data: json
+    }
 }
 
 function fetchBalance() {
-  return dispatch => {
-    dispatch(requestBalance())
-    return fetch('/api/accounts')
-      .then(response => response.json())
-      .then(json => dispatch(receiveBalance(json)))
-  }
+    return dispatch => {
+        dispatch(requestBalance())
+        return fetch('/api/accounts')
+            .then(response => response.json())
+            .then(json => dispatch(receiveBalance(json)))
+    }
 }
 
 export function fetchBalanceInitial() {
-  return (dispatch, getState) => {
-      return dispatch(fetchBalance())
-  }
+    return (dispatch) => {
+        return dispatch(fetchBalance())
+    }
+}
+
+function requestTransactions() {
+    return {
+        type: actions.REQUEST_TRANSACTIONS
+    }
+}
+
+function receiveTransactions(json) {
+    return {
+        type: actions.RECEIVE_TRANSACTIONS,
+        data: json
+    }
+}
+
+function fetchTransactions() {
+    return dispatch => {
+        dispatch(requestTransactions())
+        return fetch('/api/reporting')
+            .then(response => response.json())
+            .then(json => dispatch(receiveTransactions(json)))
+    }
+}
+
+export function fetchTransactionsInitial() {
+    return (dispatch) => {
+        return dispatch(fetchTransactions())
+    }
 }
