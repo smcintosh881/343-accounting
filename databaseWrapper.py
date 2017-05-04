@@ -168,7 +168,7 @@ def getTransactionHistory(order=1):
 	for i in table.all():
 		t = {}
 		t['date'] = i['date']
-		t['amount'] = float(i['amount']) * -1
+		t['amount'] = float(i['posttaxamount'] - i['taxamount']) * -1
 		t['account'] = i['accountid']
 		transactions.append(t)
 	transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'],DATE_FORMAT)),reverse=(order==1))
