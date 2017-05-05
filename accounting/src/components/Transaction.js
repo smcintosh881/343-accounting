@@ -1,41 +1,25 @@
 import {Component, PropTypes} from 'react';
-import {Table, Header} from 'semantic-ui-react';
+import {Table} from 'semantic-ui-react';
 
-export default class CurrentBalance extends Component {
+export default class Transaction extends Component {
     constructor(props) {
         super(props);
     }
 
     render() {
+        const transaction = this.props.transaction;
         return (
-            <div>
-                <Table color={this.props.color} >
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell>Food</Table.HeaderCell>
-                            <Table.HeaderCell>Calories</Table.HeaderCell>
-                            <Table.HeaderCell>Protein</Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-
-                    <Table.Body>
-                        <Table.Row>
-                            <Table.Cell>Apples</Table.Cell>
-                            <Table.Cell>200</Table.Cell>
-                            <Table.Cell>0g</Table.Cell>
-                        </Table.Row>
-                        <Table.Row>
-                            <Table.Cell>Orange</Table.Cell>
-                            <Table.Cell>310</Table.Cell>
-                            <Table.Cell>0g</Table.Cell>
-                        </Table.Row>
-                    </Table.Body>
-                </Table>
-            </div>
+            <Table.Row>
+                <Table.Cell>{JSON.stringify(transaction.account)}</Table.Cell>
+                <Table.Cell>{JSON.stringify(transaction.date)}</Table.Cell>
+                <Table.Cell>{JSON.stringify(transaction.transaction)}</Table.Cell>
+                <Table.Cell>{JSON.stringify(transaction.amount)}</Table.Cell>
+            </Table.Row>
         );
     }
 }
 
-CurrentBalance.propTypes = {
-    color: PropTypes.string,
+
+Transaction.propTypes = {
+    transaction: PropTypes.object,
 };

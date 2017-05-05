@@ -6,11 +6,16 @@ import MainChart from '../components/MainChart';
 import PiChart from '../components/PiChart';
 import RecentTransactions from '../components/RecentTransactions'
 import {fetchBalanceInitial, fetchTransactionsInitial} from '../actions/index'
-import {Menu, Grid, Segment} from 'semantic-ui-react';
+import {Grid, Segment} from 'semantic-ui-react';
 
 class Dashboard extends Component {
     constructor(props) {
-        super(props)
+        super(props);
+        this.state = {
+            transactions: {
+                history: []
+            }
+        };
     }
 
     componentDidMount() {
@@ -21,6 +26,8 @@ class Dashboard extends Component {
 
     render() {
         const accounts = this.props.accountBalance;
+        const history = this.props.history;
+
         return (
             <Segment attached='bottom'>
                 <Grid>
@@ -49,8 +56,8 @@ class Dashboard extends Component {
                     </Grid.Row>
                     <Grid.Row>
                         <Grid.Column width={1}/>
-                        <Grid.Column width={14}>
-                            <RecentTransactions />
+                        <Grid.Column width={8}>
+                            <RecentTransactions history={history}/>
                         </Grid.Column>
                         <Grid.Column width={1}/>
                     </Grid.Row>
@@ -62,12 +69,14 @@ class Dashboard extends Component {
 
 Dashboard.propTypes = {
     dispatch: PropTypes.func.isRequired,
-    accountBalance: PropTypes.object
+    accountBalance: PropTypes.object.isRequired,
+    history: PropTypes.array
 };
 
 function mapStateToProps(state) {
     return {
         accountBalance: state.accountBalance,
+        history: state.transactions.history
     };
 }
 

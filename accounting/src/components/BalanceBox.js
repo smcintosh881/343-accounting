@@ -1,7 +1,7 @@
 import {Component, PropTypes} from 'react';
 import {Segment, Header} from 'semantic-ui-react';
 
-export default class CurrentBalance extends Component {
+export default class BalanceBox extends Component {
     constructor(props) {
         super(props);
     }
@@ -20,7 +20,7 @@ export default class CurrentBalance extends Component {
     }
 }
 
-CurrentBalance.propTypes = {
+BalanceBox.propTypes = {
     balance: PropTypes.number,
     header: PropTypes.string
 };

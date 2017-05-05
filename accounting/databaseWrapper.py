@@ -176,6 +176,7 @@ def getTransactionHistory(order=1):
         t['date'] = i['date']
         t['amount'] = float(i['posttaxamount'] - i['taxamount']) * -1
         t['account'] = i['accountid']
+        t['transaction'] = 'Salary'
         transactions.append(t)
     table = db['salestransactions']
     for i in table.all():
@@ -183,6 +184,7 @@ def getTransactionHistory(order=1):
         t['date'] = i['date']
         t['amount'] = float(i['posttaxamount'] - i['taxamount']) * (-1 if i['transactiontype'] == 'withdrawal' else 1)
         t['account'] = i['accountid']
+        t['transaction'] = 'Sales'
         transactions.append(t)
     table = db['inventorytransactions']
     for i in table.all():
@@ -190,13 +192,7 @@ def getTransactionHistory(order=1):
         t['date'] = i['date']
         t['amount'] = float(i['posttaxamount'] - i['taxamount']) * -1
         t['account'] = i['accountid']
-        transactions.append(t)
-    table = db['inventorytransactions']
-    for i in table.all():
-        t = {}
-        t['date'] = i['date']
-        t['amount'] = float(i['amount']) * -1
-        t['account'] = i['accountid']
+        t['transaction'] = 'Inventory'
         transactions.append(t)
     transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'], DATE_FORMAT)),
                           reverse=(order == 1))

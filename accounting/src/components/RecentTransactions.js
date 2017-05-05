@@ -1,8 +1,8 @@
 import {Component, PropTypes} from 'react';
-import {Segment, Header} from 'semantic-ui-react';
+import {Table} from 'semantic-ui-react';
 import Transaction from '../components/Transaction';
 
-export default class CurrentBalance extends Component {
+export default class RecentTransactions extends Component {
     constructor(props) {
         super(props);
     }
@@ -10,15 +10,26 @@ export default class CurrentBalance extends Component {
     render() {
         return (
             <div>
-                <Transaction color="green"/>
-                <Transaction color="teal"/>
-                <Transaction color="blue"/>
+                <Table color={this.props.color}>
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell>Account</Table.HeaderCell>
+                            <Table.HeaderCell>Date</Table.HeaderCell>
+                            <Table.HeaderCell>Transaction</Table.HeaderCell>
+                            <Table.HeaderCell>Amount</Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                        {this.props.history.map(transaction => {
+                            return (<Transaction transaction={transaction}/>)
+                        })}
+                    </Table.Body>
+                </Table>
             </div>
         );
     }
 }
 
-CurrentBalance.propTypes = {
-    balance: PropTypes.number,
-    header: PropTypes.string
+RecentTransactions.propTypes = {
+    history: PropTypes.arrayOf(PropTypes.object)
 };
