@@ -19,7 +19,6 @@ export default class Transaction extends Component {
     }
 }
 
-
 Transaction.propTypes = {
     transaction: PropTypes.object,
 };

@@ -21,7 +21,6 @@ class Dashboard extends Component {
     componentDidMount() {
         const {dispatch} = this.props;
         dispatch(fetchBalanceInitial());
-        dispatch(fetchTransactionsInitial());
     }
 
     render() {

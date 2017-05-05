@@ -8,7 +8,6 @@ DATE_FORMAT = "%B %d %Y %H:%M:%S:%f"
 
 """
 Withdraws a specified amount from the specified account
-
 @param db: database instance
 @param amount: (float) amount to withdraw from the account
 @param account_id: id of the account to withdraw from, main account
