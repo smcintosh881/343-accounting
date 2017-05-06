@@ -172,9 +172,15 @@ necessary for Reporting
 def reporting():
     data = get_data_from_request(request)
     order = 1
+    withdrawal = ''
+    type = ''
     if data and data['order']:
         order = data['order']
-    return getTransactionHistory(order=order)
+    if data and data['withdrawal']:
+        withdrawal = data['withdrawal']
+    if data and data['type']:
+        type = data['type']
+    return getTransactionHistory(order=order, withdrawal=withdrawal, type=type)
 
 
 """

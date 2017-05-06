@@ -4,12 +4,12 @@ import Moment from 'moment';
 
 function accountBalance(state = {}, action) {
     switch (action.type) {
-        case RECEIVE_BALANCE:
+        case actions.RECEIVE_BALANCE:
             return Object.assign({}, state, {
                 balance: action.data[0].balance,
                 taxes: action.data[1].balance,
             });
-        case REQUEST_BALANCE:
+        case actions.REQUEST_BALANCE:
         default:
             return state
     }
@@ -24,11 +24,20 @@ function transactions(state = {history: []}, action) {
         case actions.RECEIVE_TRANSACTIONS:
             return Object.assign({}, state, {
                 history: action.data.map(transaction => {
+                    let positive = false;
+                    let negative = true;
+                    if (JSON.stringify(transaction.amount).search('-') === -1) {
+                        transaction.amount = "+" + transaction.amount;
+                        positive = true;
+                        negative = false;
+                    }
                     return {
                         date: xAgo(transaction.date),
                         amount: transaction.amount,
                         account: transaction.account,
-                        transaction: transaction.transaction
+                        transaction: transaction.transaction,
+                        positive: positive,
+                        negative: negative
                     }
                 })
             });
@@ -39,7 +48,7 @@ function transactions(state = {history: []}, action) {
 }
 
 const rootReducer = combineReducers({
-    accountBalance,
+    accountBalance, transactions
 });
 
 let initialState = {

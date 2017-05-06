@@ -9,11 +9,11 @@ export default class Transaction extends Component {
     render() {
         const transaction = this.props.transaction;
         return (
-            <Table.Row>
-                <Table.Cell>{JSON.stringify(transaction.account)}</Table.Cell>
-                <Table.Cell>{JSON.stringify(transaction.date)}</Table.Cell>
-                <Table.Cell>{JSON.stringify(transaction.transaction)}</Table.Cell>
-                <Table.Cell>{JSON.stringify(transaction.amount)}</Table.Cell>
+            <Table.Row positive={transaction.positive} negative={transaction.negative}>
+                <Table.Cell>{transaction.date}</Table.Cell>
+                <Table.Cell>{transaction.account}</Table.Cell>
+                <Table.Cell>{transaction.transaction}</Table.Cell>
+                <Table.Cell>{transaction.amount}</Table.Cell>
             </Table.Row>
         );
     }

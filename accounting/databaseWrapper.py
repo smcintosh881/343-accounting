@@ -2,6 +2,7 @@ import datetime
 import dataset
 import json
 import time
+import numpy as np
 
 MAIN_ACCOUNT_ID = 1
 DATE_FORMAT = "%B %d %Y %H:%M:%S:%f"
@@ -166,17 +167,20 @@ def salaryTransaction(payload):
     table.insert(payload)
 
 
-def getTransactionHistory(order=1):
+def getTransactionHistory(order=1, withdrawal='', type=''):
     db = get_db()
     table = db['salarytransactions']
     transactions = []
+    salary = []
+    sales = []
+    inventory = []
     for i in table.all():
         t = {}
         t['date'] = i['date']
         t['amount'] = float(i['posttaxamount'] - i['taxamount']) * -1
         t['account'] = i['accountid']
         t['transaction'] = 'Salary'
-        transactions.append(t)
+        salary.append(t)
     table = db['salestransactions']
     for i in table.all():
         t = {}
@@ -184,7 +188,7 @@ def getTransactionHistory(order=1):
         t['amount'] = float(i['posttaxamount'] - i['taxamount']) * (-1 if i['transactiontype'] == 'withdrawal' else 1)
         t['account'] = i['accountid']
         t['transaction'] = 'Sales'
-        transactions.append(t)
+        sales.append(t)
     table = db['inventorytransactions']
     for i in table.all():
         t = {}
@@ -192,9 +196,44 @@ def getTransactionHistory(order=1):
         t['amount'] = float(i['posttaxamount'] - i['taxamount']) * -1
         t['account'] = i['accountid']
         t['transaction'] = 'Inventory'
-        transactions.append(t)
-    transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'], DATE_FORMAT)),
+        inventory.append(t)
+
+    if withdrawal == '' and type == '':
+        transactions = salary + sales + inventory
+        transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'], DATE_FORMAT)),
+                              reverse=(order == 1))
+
+    if type == '':
+        transactions = np.array(salary + sales + inventory)
+        if withdrawal == 'Withdrawal':
+            transactions = transactions[transactions >= 0]
+        if withdrawal == 'Deposit':
+            transactions = transactions[transactions <= 0]
+        transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'], DATE_FORMAT)),
                           reverse=(order == 1))
+
+    if type == 'Salary':
+        transactions = np.array(salary)
+
+        if withdrawal == 'Withdrawal':
+            transactions = transactions[transactions >= 0]
+        if withdrawal == 'Deposit':
+            transactions = transactions[transactions <= 0]
+
+    if type == 'Sales':
+        transactions = np.array(sales)
+        if withdrawal == 'Withdrawal':
+            transactions = transactions[transactions >= 0]
+        if withdrawal == 'Deposit':
+            transactions = transactions[transactions <= 0]
+
+    if type == "Inventory":
+        transactions = np.array(inventory)
+        if withdrawal == 'Withdrawal':
+            transactions = transactions[transactions >= 0]
+        if withdrawal == 'Deposit':
+            transactions = transactions[transactions <= 0]
+
     return json.dumps(transactions)
 
 

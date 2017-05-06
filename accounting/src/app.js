@@ -2,6 +2,8 @@ import {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import Dashboard from './container/Dashboard';
+import History from './container/History';
+
 import {Menu, Grid, Segment} from 'semantic-ui-react';
 import configureStore from './configureStore.js'
 
@@ -18,22 +20,27 @@ class Demo extends Component {
 
         return (
             <Provider store={store}>
-            <div>
-                <Grid padded>
-                    <Grid.Row />
-                    <Grid.Row>
-                        <Grid.Column>
-                            <Menu attached='top' tabular>
-                                <Menu.Item name='Overview' active={activeItem === 'Overview'}
-                                           onClick={this.handleItemClick}/>
-                                <Menu.Item name='History' active={activeItem === 'History'}
-                                           onClick={this.handleItemClick}/>
-                            </Menu>
-                            <Dashboard />
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-            </div>
+                <div>
+                    <Grid padded>
+                        <Grid.Row />
+                        <Grid.Row>
+                            <Grid.Column width={1}/>
+                            <Grid.Column width={14}>
+                                <Menu attached='top' tabular>
+                                    <Menu.Item name='Overview' active={activeItem === 'Overview'}
+                                               onClick={this.handleItemClick}/>
+                                    <Menu.Item name='History' active={activeItem === 'History'}
+                                               onClick={this.handleItemClick}/>
+                                </Menu>
+                                    {activeItem === 'Overview' ? (
+                                        <Dashboard />
+                                    ) : (
+                                        <History />
+                                    )}
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </div>
             </Provider>
         );
     }

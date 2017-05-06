@@ -21,6 +21,7 @@ class Dashboard extends Component {
     componentDidMount() {
         const {dispatch} = this.props;
         dispatch(fetchBalanceInitial());
+        dispatch(fetchTransactionsInitial())
     }
 
     render() {
@@ -44,7 +45,7 @@ class Dashboard extends Component {
                             <Grid.Row>
                                 <BalanceBox balance={accounts.balance} header="Account Balance"/>
                             </Grid.Row>
-                            <Grid.Row divided={true}/>
+                            <div style={{"marginTop" : "30px"}}/>
                             <Grid.Row>
                                 <BalanceBox balance={accounts.taxes} header="Tax Balance"/>
                             </Grid.Row>
@@ -52,14 +53,11 @@ class Dashboard extends Component {
                         <Grid.Column width={5}>
                             <PiChart />
                         </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row>
-                        <Grid.Column width={1}/>
-                        <Grid.Column width={8}>
-                            <RecentTransactions history={history}/>
+                        <Grid.Column width={6}>
+                            <RecentTransactions recent={true} history={history}/>
                         </Grid.Column>
-                        <Grid.Column width={1}/>
                     </Grid.Row>
+                    <Grid.Row />
                 </Grid>
             </Segment>
         )
