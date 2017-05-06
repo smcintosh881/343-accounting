@@ -1,28 +1,65 @@
 import {Component, PropTypes} from 'react';
 import {Table, Segment, Header} from 'semantic-ui-react';
 import Transaction from '../components/Transaction';
+import _ from 'lodash';
 
 export default class AllTransactions extends Component {
     constructor(props) {
         super(props);
     }
 
+    state = {
+        column: 'Date',
+        direction: 'ascending',
+    };
+
+    handleSort = clickedColumn => () => {
+        const {column, data, direction} = this.state;
+
+        this.setState({
+            column: clickedColumn,
+            direction: direction === 'ascending' ? 'descending' : 'ascending',
+        })
+    };
+
     render() {
+        const {column, data, direction} = this.state;
+
         return (
             <Table sortable selectable color={this.props.color}>
                 <Table.Header>
                     <Table.Row>
-                        <Table.HeaderCell>Date</Table.HeaderCell>
-                        <Table.HeaderCell>Account</Table.HeaderCell>
-                        <Table.HeaderCell>Transaction Type</Table.HeaderCell>
-                        <Table.HeaderCell>Amount</Table.HeaderCell>
+                        <Table.HeaderCell sorted={column === 'Date' && direction}
+                                          onClick={this.handleSort('Date')}>
+                            Date
+                        </Table.HeaderCell>
+                        <Table.HeaderCell sorted={column === 'Account' && direction}
+                                          onClick={this.handleSort('Account')}>
+                            Account
+                        </Table.HeaderCell>
+                        <Table.HeaderCell sorted={column === 'Type' && direction}
+                                          onClick={this.handleSort('Type')}>
+                            Transaction Type
+                        </Table.HeaderCell>
+                        <Table.HeaderCell sorted={column === 'Amount' && direction}
+                                          onClick={this.handleSort('Amount')}>
+                            Amount
+                        </Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    {this.props.history.map(transaction => {
-                        return (<Transaction transaction={transaction}/>);
-                    })
-                    }
+                    <Table.Body>
+                        {this.state.direction === "ascending" ? (
+                                _.sortBy(this.props.history, [this.state.column]).map(transaction => {
+                                    return (<Transaction key={transaction.amount} transaction={transaction}/>)
+                                }) ) : (
+                                _.sortBy(this.props.history, [this.state.column]).reverse().map(transaction => {
+                                        return (<Transaction key={transaction.amount} transaction={transaction}/>)
+                                    }
+                                )
+                            )
+                        }
+                    </Table.Body>
                 </Table.Body>
             </Table>
         )
@@ -32,3 +69,4 @@ export default class AllTransactions extends Component {
 AllTransactions.propTypes = {
     history: PropTypes.arrayOf(PropTypes.object),
 };
+
