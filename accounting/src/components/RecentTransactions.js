@@ -10,12 +10,12 @@ export default class RecentTransactions extends Component {
     }
 
     state = {
-        column: 'Date',
-        direction: 'ascending',
+        column: 'date',
+        direction: null,
     };
 
     handleSort = clickedColumn => () => {
-        const {column, data, direction} = this.state;
+        const {direction} = this.state;
 
         this.setState({
             column: clickedColumn,
@@ -24,7 +24,7 @@ export default class RecentTransactions extends Component {
     };
 
     render() {
-        const {column, data, direction} = this.state;
+        const {column, direction} = this.state;
         return (
             <div>
                 <Header as='h3' textAlign='center' attached='top' block>
@@ -34,20 +34,20 @@ export default class RecentTransactions extends Component {
                     <Table sortable selectable color={this.props.color}>
                         <Table.Header>
                             <Table.Row>
-                                <Table.HeaderCell sorted={column === 'Date' && direction}
-                                                  onClick={this.handleSort('Date')}>
+                                <Table.HeaderCell sorted={column === 'date' && direction}
+                                                  onClick={this.handleSort('date')}>
                                     Date
                                 </Table.HeaderCell>
-                                <Table.HeaderCell sorted={column === 'Account' && direction}
-                                                  onClick={this.handleSort('Account')}>
+                                <Table.HeaderCell sorted={column === 'account' && direction}
+                                                  onClick={this.handleSort('account')}>
                                     Account
                                 </Table.HeaderCell>
-                                <Table.HeaderCell sorted={column === 'Type' && direction}
-                                                  onClick={this.handleSort('Type')}>
+                                <Table.HeaderCell sorted={column === 'transaction' && direction}
+                                                  onClick={this.handleSort('transaction')}>
                                     Transaction Type
                                 </Table.HeaderCell>
-                                <Table.HeaderCell sorted={column === 'Amount' && direction}
-                                                  onClick={this.handleSort('Amount')}>
+                                <Table.HeaderCell sorted={column === 'amount' && direction}
+                                                  onClick={this.handleSort('amount')}>
                                     Amount
                                 </Table.HeaderCell>
                             </Table.Row>
