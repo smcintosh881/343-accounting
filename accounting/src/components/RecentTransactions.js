@@ -11,23 +11,14 @@ export default class RecentTransactions extends Component {
 
     state = {
         column: 'Date',
-        data: [],
         direction: 'ascending',
     };
 
     handleSort = clickedColumn => () => {
         const {column, data, direction} = this.state;
 
-        if (column !== clickedColumn) {
-            this.setState({
-                column: clickedColumn,
-                data: _.sortBy(data, [clickedColumn]),
-                direction: 'ascending',
-            });
-            return
-        }
         this.setState({
-            data: data.reverse(),
+            column: clickedColumn,
             direction: direction === 'ascending' ? 'descending' : 'ascending',
         })
     };
@@ -62,9 +53,15 @@ export default class RecentTransactions extends Component {
                             </Table.Row>
                         </Table.Header>
                         <Table.Body>
-                            {this.props.history.splice(0, 4).map(transaction => {
-                                return (<Transaction key={transaction.amount} transaction={transaction}/>)
-                            })
+                            {this.state.direction === "ascending" ? (
+                                    _.sortBy(this.props.history, [this.state.column]).map(transaction => {
+                                        return (<Transaction key={transaction.amount} transaction={transaction}/>)
+                                    }) ) : (
+                                    _.sortBy(this.props.history, [this.state.column]).reverse().map(transaction => {
+                                            return (<Transaction key={transaction.amount} transaction={transaction}/>)
+                                        }
+                                    )
+                                )
                             }
                         </Table.Body>
                     </Table>

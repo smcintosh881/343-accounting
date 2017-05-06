@@ -9,7 +9,7 @@ export default class Transaction extends Component {
     render() {
         const transaction = this.props.transaction;
         return (
-            <Table.Row positive={transaction.positive} negative={transaction.negative}>
+            <Table.Row key={transaction.account} positive={transaction.positive} negative={transaction.negative}>
                 <Table.Cell>{transaction.date}</Table.Cell>
                 <Table.Cell>{transaction.account}</Table.Cell>
                 <Table.Cell>{transaction.transaction}</Table.Cell>

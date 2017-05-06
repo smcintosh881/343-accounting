@@ -54,7 +54,7 @@ class Dashboard extends Component {
                             <PiChart />
                         </Grid.Column>
                         <Grid.Column width={6}>
-                            <RecentTransactions recent={true} history={history}/>
+                            <RecentTransactions recent={true} history={history.splice(0,4)}/>
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row />
