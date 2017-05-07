@@ -225,7 +225,7 @@ def get_bal_history(account=1):
 	transactions = []
 	if account != 2:
 		for i in table.all():
-			if i['accountid'] == 1:
+			if i['accountid'] == account:
 				t = {}
 				t['date'] = i['date']
 				t['amount'] = float(i['posttaxamount'] - i['taxamount']) * -1
@@ -233,7 +233,7 @@ def get_bal_history(account=1):
 				transactions.append(t)
 		table = db['salestransactions']
 		for i in table.all():
-			if i['accountid'] == 1:
+			if i['accountid'] == account:
 				t = {}
 				t['date'] = i['date']
 				t['amount'] = float(i['posttaxamount'] - i['taxamount']) * (-1 if i['transactiontype'] == 'withdrawal' else 1)
@@ -241,7 +241,7 @@ def get_bal_history(account=1):
 				transactions.append(t)
 		table = db['inventorytransactions']
 		for i in table.all():
-			if i['accountid'] == 1:
+			if i['accountid'] == account:
 				t = {}
 				t['date'] = i['date']
 				t['amount'] = float(i['posttaxamount'] - i['taxamount']) * -1
@@ -249,7 +249,7 @@ def get_bal_history(account=1):
 				transactions.append(t)
 		table = db['inventorytransactions']
 		for i in table.all():
-			if i['accountid'] == 1:
+			if i['accountid'] == account:
 				t = {}
 				t['date'] = i['date']
 				t['amount'] = float(i['posttaxamount'] - i['taxamount']) * -1
@@ -260,13 +260,13 @@ def get_bal_history(account=1):
 		for i in table.all():
 			t = {}
 			t['date'] = i['date']
-			t['amount'] = i['amount']
+			t['amount'] = float(i['amount'])
 			transactions.append(t)
 		table = db['taxPayments']
 		for i in table.all():
 			t = {}
 			t['date'] = i['date']
-			t['amount'] = i['amount']
+			t['amount'] = float(i['amount'])*-1
 			transactions.append(t)
 	transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'],DATE_FORMAT)))
 	balance = 10e6
