@@ -42,27 +42,25 @@ account
 """
 @app.route('/salary',methods=['POST'])
 def salary():
-	data = get_data_from_request(request)
-	if data['amount'] and data['department'] and data['userID']:
-		try:
-			amount = float(data['amount'])
-			userId = int(data['userID'])
-		except:
-			return malformed_request()
-		try:
-			tag = data['tag']
-		except:
-			tag = "salary"
-		department = data['department']
-		if amount <= 0 or userId < 0 and not department in ACCEPTED_DEPARTMENTS:
-			return malformed_request()
-		taxAmount = amount * SALARY_TAX
-		amount += taxAmount
-		payload = {'date':get_date(),
-		'posttaxamount':amount,'department':department,
-		'taxamount':taxAmount,'userid':userId,'tag':tag}
-		return malformed_request() if salaryTransaction(payload) == False else ok_status() 
-	return malformed_request()
+	try:
+		data = get_data_from_request(request)
+		amount = float(data['amount'])
+		userId = int(data['userID'])
+	except:
+		return malformed_request()
+	try:
+		tag = data['tag']
+	except:
+		tag = "salary"
+	department = data['department']
+	if amount <= 0 or userId < 0 and not department in ACCEPTED_DEPARTMENTS:
+		return malformed_request()
+	taxAmount = amount * SALARY_TAX
+	amount += taxAmount
+	payload = {'date':get_date(),
+	'posttaxamount':amount,'department':department,
+	'taxamount':taxAmount,'userid':userId,'tag':tag}
+	return malformed_request() if salaryTransaction(payload) == False else ok_status() 
 
 """
 Endpoint for the SalesTransaction API
@@ -73,25 +71,22 @@ in the request from the main account
 """
 @app.route('/sale',methods=['POST'])
 def sale():
-	data = get_data_from_request(request)
-	if data['preTaxAmount'] and data['taxAmount'] and data['transactionType'] and data['salesID']:
-		try:
-			preTaxAmount = float(data['preTaxAmount'])
-			taxAmount = float(data['taxAmount'])
-			salesId = int(data['salesID'])
-			transactionType = data['transactionType'].lower()
-		except:
-			return malformed_request()
-		if preTaxAmount <= 0 or taxAmount <= 0 or salesId < 0 or (transactionType != "deposit" and transactionType != "withdrawal"):
-			return malformed_request()
-		amount = preTaxAmount + taxAmount
-		payload = {'date': get_date(),
-		'posttaxamount':amount,'taxamount':taxAmount,
-		'transactiontype':transactionType,'salesid':salesId}
-		return malformed_request() if salesTransaction(payload) == False else ok_status()
-		
-	return malformed_request()
-
+	try:
+		data = get_data_from_request(request)
+		preTaxAmount = float(data['preTaxAmount'])
+		taxAmount = float(data['taxAmount'])
+		salesId = int(data['salesID'])
+		transactionType = data['transactionType'].lower()
+	except:
+		return malformed_request()
+	if preTaxAmount <= 0 or taxAmount <= 0 or salesId < 0 or (transactionType != "deposit" and transactionType != "withdrawal"):
+		return malformed_request()
+	amount = preTaxAmount + taxAmount
+	payload = {'date': get_date(),
+	'posttaxamount':amount,'taxamount':taxAmount,
+	'transactiontype':transactionType,'salesid':salesId}
+	return malformed_request() if salesTransaction(payload) == False else ok_status()
+	
 """
 Endpoint for the InventoryTransaction API,
 this only takes POST requests. Will make a new
@@ -100,8 +95,8 @@ withdraw the amount specified from the main account
 """
 @app.route('/inventory',methods=['POST'])
 def inventory():
-	data = get_data_from_request(request)
 	try:
+		data = get_data_from_request(request)
 		amount = float(data['amount'])
 	except:
 		return malformed_request()
@@ -140,8 +135,8 @@ Internal API endpoint for paying taxes
 """
 @app.route('/paytax',methods=['POST'])
 def pay_tax():
-	data = get_data_from_request(request)
 	try:
+		data = get_data_from_request(request)
 		amount = float(data['amount'])
 	except:
 		return malformed_request()
@@ -156,15 +151,17 @@ necessary for Reporting
 """
 @app.route('/reporting',methods=['GET'])
 def reporting():
-	return get_reporting_info()
-
+	data = get_data_from_request(request)
+	order = 1
+	if data and data['order']:
+		order = data['order']
+	return getTransactionHistory(order=order)
 
 @app.route('/logout', methods=['GET'])
 @login_required
 def logout():
 	logout_user()
 	return redirect(url_for('landing'))
-
 
 """
 Helper function to get the current date as a string

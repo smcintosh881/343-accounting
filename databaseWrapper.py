@@ -20,7 +20,6 @@ def withdraw_amount(db,amount,account_id=MAIN_ACCOUNT_ID):
 	bal = float(account['balance']) - amount
 	if bal <= 0:
 		return False
-		print  "amount too high"
 	table.update(dict(name='main',balance=bal),['name'])
 
 """
@@ -68,7 +67,7 @@ def pay_tax_amount(db,amount,register=True,accountId=1):
 	table.update(dict(name='tax',balance=bal),['name'])
 	table = db['taxpayments']	
 	taxPayment = {
-		'id': len(table),
+		'paymentid': len(table),
 		'date' : datetime.datetime.now().strftime(DATE_FORMAT),
 		'amount' : amount,
 		'accountid' : accountId
@@ -85,13 +84,11 @@ def make_tax_transaction(db,amount):
 	table = db['taxtransactions']
 	pk = len(table)
 	payload = {
+		'transactionid':pk,
 		'date':datetime.datetime.now().strftime(DATE_FORMAT),
-		'id':pk,
 		'amount':amount
 	}
 	table.insert(payload)
-
-
 
 """
 Helper function to get an instance of the database
@@ -143,38 +140,38 @@ def salaryTransaction(payload):
 	register_tax_amount(db,payload['taxamount'])
 	table.insert(payload)
 
-def getTransactionHistory():
+def getTransactionHistory(order=1):
 	db = get_db()
 	table = db['salarytransactions']
 	transactions = []
 	for i in table.all():
 		t = {}
 		t['date'] = i['date']
-		t['amount'] = (i['posttaxamount'] - i['taxamount']) * -1
+		t['amount'] = float(i['posttaxamount'] - i['taxamount']) * -1
 		t['account'] = i['accountid']
 		transactions.append(t)
 	table = db['salestransactions']
 	for i in table.all():
 		t = {}
 		t['date'] = i['date']
-		t['amount'] = (i['posttaxamount'] - i['taxamount']) * (-1 if i['transactiontype'] == 'withdrawal' else 1)
+		t['amount'] = float(i['posttaxamount'] - i['taxamount']) * (-1 if i['transactiontype'] == 'withdrawal' else 1)
 		t['account'] = i['accountid']
 		transactions.append(t)
 	table = db['inventorytransactions']
 	for i in table.all():
 		t = {}
 		t['date'] = i['date']
-		t['amount'] = (i['posttaxamount'] - i['taxamount']) * -1
+		t['amount'] = float(i['posttaxamount'] - i['taxamount']) * -1
 		t['account'] = i['accountid']
 		transactions.append(t)
 	table = db['inventorytransactions']
 	for i in table.all():
 		t = {}
 		t['date'] = i['date']
-		t['amount'] = i['amount'] * -1
+		t['amount'] = float(i['posttaxamount'] - i['taxamount']) * -1
 		t['account'] = i['accountid']
 		transactions.append(t)
-	transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'],DATE_FORMAT)),reverse=False)
+	transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'],DATE_FORMAT)),reverse=(order==1))
 	return json.dumps(transactions)
 
 """
