@@ -22,9 +22,10 @@ class Dashboard extends Component {
         const {dispatch} = this.props;
         dispatch(fetchBalanceInitial());
         dispatch(fetchTransactionsInitial());
+
     }
 
-    handlePayTax() {
+    payTaxes() {
         const {dispatch} = this.props;
         dispatch(payTaxesAction({amount: this.props.accountBalance.taxes}));
     }
@@ -50,7 +51,7 @@ class Dashboard extends Component {
                             </Grid.Row>
                             <div style={{"marginTop": "30px"}}/>
                             <Grid.Row>
-                                <BalanceBox payTaxes={this.handlePayTax} tax={true} balance={accounts.taxes}
+                                <BalanceBox payTaxes={this.payTaxes} tax={true} balance={accounts.taxes}
                                             header="Tax Balance"/>
                             </Grid.Row>
                         </Grid.Column>
@@ -80,14 +81,5 @@ function mapStateToProps(state) {
         history: state.transactions.history
     };
 }
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        handlePayTax: (balance) => {
-            dispatch(dispatch(payTaxesAction({amount: balance}))
-            )
-        }
-    }
-};
 
 export default connect(mapStateToProps)(Dashboard)

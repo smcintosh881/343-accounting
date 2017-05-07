@@ -70,15 +70,12 @@ function pay(json) {
     }
 }
 
-function postPayTax(payload) {
+function postPayTax({payload}) {
     return dispatch => {
         return fetch('/api/paytax', {
-            method: 'POST',
-            data: {
-                amount: payload.amount
-            }
-        })
-            .then(response => response.json())
+            method: 'post',
+            body: JSON.stringify(payload)
+        }).then(response => response.json())
             .then(json => dispatch(pay(json)))
     }
 }

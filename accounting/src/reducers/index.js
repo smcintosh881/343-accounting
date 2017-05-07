@@ -50,19 +50,6 @@ const rootReducer = combineReducers({
     accountBalance, transactions
 });
 
-let initialState = {
-    transactions: {
-        history: [
-            {
-                date: '',
-                amount: 0,
-                account: '',
-                transaction: ''
-            }
-        ]
-    }
-};
-
 let store = createStore(rootReducer);
 
 export default rootReducer

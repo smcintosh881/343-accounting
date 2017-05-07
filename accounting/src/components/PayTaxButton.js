@@ -12,7 +12,7 @@ export default class PayTaxButton extends Component {
     render() {
         return (
             <Button positive size="medium" style={{"marginTop": "10px"}} fluid onClick={this.props.handlePayTax}>
-                Pay Tax {this.props.taxBalance}
+                Pay Tax
             </Button>
         );
     }
