@@ -50,15 +50,12 @@ class History extends Component {
                 <Grid>
                     <Grid.Row />
                     <Grid.Row>
-                        <Grid.Column style={{"marginLeft" : "30px"}} width={2}>
+                        <Grid.Column style={{"marginLeft": "30px"}} width={2}>
                             <HistoryMenu />
                         </Grid.Column>
-                        <Grid.Column width={1}/>
+                        <Grid.Column width={1} />
                         <Grid.Column width={12}>
-                            <Grid.Column width={1}/>
-                            <Grid.Column width={14}>
-                                <AllTransactions recent={false} history={history}/>
-                            </Grid.Column>
+                            <AllTransactions recent={false} history={history}/>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

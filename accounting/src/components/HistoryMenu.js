@@ -14,7 +14,7 @@ export default class HistoryMenu extends Component {
         const {activeItemType} = this.state || {};
 
         return (
-            <Menu vertical>
+            <Menu style={{"width": "12rem"}} vertical>
                 <Menu.Item>
                     <Menu.Header>Transaction Type</Menu.Header>
                     <Menu.Menu>
