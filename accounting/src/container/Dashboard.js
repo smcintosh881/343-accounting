@@ -40,11 +40,10 @@ class Dashboard extends Component {
                 <Grid>
                     <Grid.Row />
                     <Grid.Row>
-                        <Grid.Column style={{"marginLeft": "40px"}} width={12}>
+                        <Grid.Column style={{"marginLeft": "40px"}} width={11}>
                             <MainChart />
                         </Grid.Column>
-                        <Grid.Column width={3}>
-                            <div style={{"marginTop": "50%"}}/>
+                        <Grid.Column width={4}>
                             <Grid.Row>
                                 <BalanceBox tax={false} balance={accounts.balance} header="Current Balance"/>
                             </Grid.Row>

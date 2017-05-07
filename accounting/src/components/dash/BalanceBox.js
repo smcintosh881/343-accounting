@@ -11,7 +11,7 @@ export default class BalanceBox extends Component {
         return (
             <div>
                 <Header as='h3' textAlign='center' attached='top' block>
-                    {this.props.header}
+                    Overview
                 </Header>
                 <Segment attached textAlign='center' compact>
                     <Grid.Row>
