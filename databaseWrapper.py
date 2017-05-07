@@ -20,7 +20,6 @@ def withdraw_amount(db,amount,account_id=MAIN_ACCOUNT_ID):
 	bal = float(account['balance']) - amount
 	if bal <= 0:
 		return False
-		print  "amount too high"
 	table.update(dict(name='main',balance=bal),['name'])
 
 """
@@ -70,7 +69,7 @@ def pay_tax_amount(db,amount,register=True,accountId=1):
 	table.update(dict(name='tax',balance=bal),['name'])
 	table = db['taxpayments']	
 	taxPayment = {
-		'transactionid': len(table),
+		'paymentid': len(table),
 		'date' : datetime.datetime.now().strftime(DATE_FORMAT),
 		'amount' : amount,
 		'accountid' : accountId
@@ -92,8 +91,6 @@ def make_tax_transaction(db,amount):
 		'amount':amount
 	}
 	table.insert(payload)
-
-
 
 """
 Helper function to get an instance of the database
