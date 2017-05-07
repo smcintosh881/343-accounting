@@ -296,7 +296,7 @@ def get_bal_history(account=1):
 			mnth = 1
 			yr +=1
 		dt = str(mnth) + "/"+ str(yr)
-		if len(dt) < 7:
+		if len(dt) < 10:
 			dt = "0" + dt
 		data['date']=str(dates[i][0]) + "/" + str(dates[i][1])
 		dt_time = time.mktime(time.strptime(dt,"%m/%Y"))
