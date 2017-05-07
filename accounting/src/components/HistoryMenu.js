@@ -10,7 +10,8 @@ export default class HistoryMenu extends Component {
 
 
     render() {
-        const {activeItem} = this.state || {};
+        const {activeTransaction} = this.state || {};
+        const {activeItemType} = this.state || {};
 
         return (
             <Menu vertical>
