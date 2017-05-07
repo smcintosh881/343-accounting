@@ -35,5 +35,4 @@ BalanceBox.propTypes = {
     header: PropTypes.string,
     tax: PropTypes.bool,
     handlePayTax: PropTypes.func
-
 };

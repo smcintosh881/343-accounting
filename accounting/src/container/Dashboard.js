@@ -1,11 +1,11 @@
 import {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import BalanceBox from '../components/BalanceBox';
-import MainChart from '../components/MainChart';
-import PiChart from '../components/PiChart';
-import RecentTransactions from '../components/RecentTransactions'
-import {fetchBalanceInitial, fetchTransactionsInitial, payTaxesAction} from '../actions/index'
+import BalanceBox from '../components/dash/BalanceBox';
+import MainChart from '../components/dash/MainChart';
+import PiChart from '../components/dash/PiChart';
+import RecentTransactions from '../components/dash/RecentTransactions'
+import {fetchBalanceInitial, fetchTransactionsInitial, payTaxesAction, fetchSpending} from '../actions/index'
 import {Grid, Segment} from 'semantic-ui-react';
 
 class Dashboard extends Component {
@@ -21,8 +21,8 @@ class Dashboard extends Component {
     componentDidMount() {
         const {dispatch} = this.props;
         dispatch(fetchBalanceInitial());
+        dispatch(fetchSpending());
         dispatch(fetchTransactionsInitial());
-
     }
 
     payTaxes() {
@@ -33,6 +33,7 @@ class Dashboard extends Component {
     render() {
         const accounts = this.props.accountBalance;
         const history = this.props.history;
+        const departmentSpending = this.props.departmentSpending;
 
         return (
             <Segment attached='bottom'>
@@ -56,7 +57,7 @@ class Dashboard extends Component {
                             </Grid.Row>
                         </Grid.Column>
                         <Grid.Column width={5}>
-                            <PiChart />
+                            <PiChart department={departmentSpending.department} spending={departmentSpending.spending}/>
                         </Grid.Column>
                         <Grid.Column width={7}>
                             <RecentTransactions recent={true} history={history.splice(0, 4)}/>
@@ -72,13 +73,15 @@ class Dashboard extends Component {
 Dashboard.propTypes = {
     dispatch: PropTypes.func.isRequired,
     accountBalance: PropTypes.object.isRequired,
-    history: PropTypes.array
+    history: PropTypes.array,
+    departmentSpending: PropTypes.array,
 };
 
 function mapStateToProps(state) {
     return {
         accountBalance: state.accountBalance,
-        history: state.transactions.history
+        history: state.transactions.history,
+        departmentSpending: state.departmentSpending
     };
 }
 

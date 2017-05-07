@@ -1,6 +1,6 @@
 import {Component, PropTypes} from 'react';
 import {Table, Segment, Header} from 'semantic-ui-react';
-import Transaction from '../components/Transaction';
+import Transaction from '../Transaction';
 import _ from 'lodash';
 
 

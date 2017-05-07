@@ -25,9 +25,37 @@ function fetchBalance() {
     }
 }
 
+function requestDepartmentSpending() {
+    return {
+        type: actions.REQUEST_SPENDING
+    }
+}
+
+function receiveDepartmentSpending(json) {
+    return {
+        type: actions.RECEIVE_SPENDING,
+        data: json
+    }
+}
+
+function fetchDepartmentSpending() {
+    return dispatch => {
+        dispatch(requestDepartmentSpending());
+        return fetch('/api/departmentSpending')
+            .then(response => response.json())
+            .then(json => dispatch(receiveDepartmentSpending(json)))
+    }
+}
+
+export function fetchSpending() {
+    return (dispatch) => {
+        return dispatch(fetchDepartmentSpending());
+    }
+}
+
 export function fetchBalanceInitial() {
-    return (dispatch, getState) => {
-        return dispatch(fetchBalance())
+    return (dispatch) => {
+        return dispatch(fetchBalance());
     }
 }
 

@@ -8,7 +8,7 @@ from flask.ext.api import status
 import datetime
 import json
 from accounting.databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction, getTransactionHistory, \
-    get_account_balances, DATE_FORMAT, pay_tax_amount, get_reporting_info
+    get_account_balances, DATE_FORMAT, pay_tax_amount, get_reporting_info, get_department_spending
 
 UI_ROUTE_PREFIX = '/ui'
 INVENTORY_TAX = 0.08
@@ -181,6 +181,11 @@ def reporting():
     if data and data['type']:
         type = data['type']
     return getTransactionHistory(order=order, withdrawal=withdrawal, type=type)
+
+
+@app.route('/api/departmentSpending', methods=['GET'])
+def department_spending():
+    return get_department_spending()
 
 
 """

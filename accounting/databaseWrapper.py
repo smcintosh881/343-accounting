@@ -210,7 +210,7 @@ def getTransactionHistory(order=1, withdrawal='', type=''):
         if withdrawal == 'Deposit':
             transactions = transactions[transactions <= 0]
         transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'], DATE_FORMAT)),
-                          reverse=(order == 1))
+                              reverse=(order == 1))
 
     if type == 'Salary':
         transactions = np.array(salary)
@@ -270,6 +270,38 @@ def get_account_balances():
             'balance': float(account['balance'])
         })
     return json.dumps(accounts)
+
+
+def get_department_spending():
+    db = get_db()
+    transactions = []
+
+    table = db['salarytransactions']
+    tsalary = {'Salary': 0}
+    for i in table.all():
+        amount = float(i['posttaxamount'] - i['taxamount']) * -1
+        if amount < 0:
+            tsalary['Salary'] += (amount * -1)
+    transactions.append(tsalary)
+
+    table = db['salestransactions']
+    tsales = {'Sales': 0}
+    for i in table.all():
+        amount = float(i['posttaxamount'] - i['taxamount']) * (
+        -1 if i['transactiontype'] == 'withdrawal' else 1)
+        if amount < 0:
+            tsales['Sales'] += (amount * -1)
+    transactions.append(tsales)
+
+    table = db['inventorytransactions']
+    tinventory = {'Inventory': 0}
+    for i in table.all():
+        amount = float(i['posttaxamount'] - i['taxamount']) * -1
+        if amount < 0:
+            tinventory['Inventory'] += (amount * -1)
+    transactions.append(tinventory)
+
+    return json.dumps(transactions)
 
 
 def add_id_and_account_to_payload(payload, pk):

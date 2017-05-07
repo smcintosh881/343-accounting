@@ -1,6 +1,6 @@
 import {Component, PropTypes} from 'react';
 import {Button} from 'semantic-ui-react';
-import {payTaxes} from '../actions/index';
+import {payTaxes} from '../../actions/index';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
