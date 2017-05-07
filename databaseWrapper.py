@@ -213,6 +213,104 @@ def add_id_and_account_to_payload(payload,pk):
 	if 'accountid' not in payload.keys():
 		payload['accountid']=MAIN_ACCOUNT_ID
 
+def get_bal_history(account=1):
+	now = datetime.datetime.now()
+	yr = now.year
+	month = now.month
+	p_yr = now.year-1
+	p_month = month
+	dates = [(a % 12+1 ,a/12) for a in range(12*yr+month-1,12*p_yr+p_month-2,-1)]
+	db = get_db()
+	table = db['salarytransactions']
+	transactions = []
+	if account != 2:
+		for i in table.all():
+			if i['accountid'] == 1:
+				t = {}
+				t['date'] = i['date']
+				t['amount'] = float(i['posttaxamount'] - i['taxamount']) * -1
+				t['account'] = i['accountid']
+				transactions.append(t)
+		table = db['salestransactions']
+		for i in table.all():
+			if i['accountid'] == 1:
+				t = {}
+				t['date'] = i['date']
+				t['amount'] = float(i['posttaxamount'] - i['taxamount']) * (-1 if i['transactiontype'] == 'withdrawal' else 1)
+				t['account'] = i['accountid']
+				transactions.append(t)
+		table = db['inventorytransactions']
+		for i in table.all():
+			if i['accountid'] == 1:
+				t = {}
+				t['date'] = i['date']
+				t['amount'] = float(i['posttaxamount'] - i['taxamount']) * -1
+				t['account'] = i['accountid']
+				transactions.append(t)
+		table = db['inventorytransactions']
+		for i in table.all():
+			if i['accountid'] == 1:
+				t = {}
+				t['date'] = i['date']
+				t['amount'] = float(i['posttaxamount'] - i['taxamount']) * -1
+				t['account'] = i['accountid']
+				transactions.append(t)
+	else:
+		table = db['taxTransactions']
+		for i in table.all():
+			t = {}
+			t['date'] = i['date']
+			t['amount'] = i['amount']
+			transactions.append(t)
+		table = db['taxPayments']
+		for i in table.all():
+			t = {}
+			t['date'] = i['date']
+			t['amount'] = i['amount']
+			transactions.append(t)
+	transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'],DATE_FORMAT)))
+	balance = 10e6
+	for i in range(len(transactions)):
+		balance += transactions[i]['amount']
+		transactions[i]['bal'] = balance
+
+	response = []
+	tr_pointer = 0
+	if account == 1:
+		cur_bal = 10e6
+	else:
+		cur_bal = 0
+	dates.reverse()
+	for i in range(len(dates)):
+		data = {}
+		if len(transactions) > 0:
+			tr_time = time.mktime(time.strptime(transactions[tr_pointer]['date'],DATE_FORMAT))
+		else:
+			tr_time = -1
+		temp = dates[i]
+		mnth = dates[i][0]+1
+		yr = dates[i][1]
+		if mnth > 12:
+			mnth = 1
+			yr +=1
+		dt = str(mnth) + "/"+ str(yr)
+		if len(dt) < 7:
+			dt = "0" + dt
+		data['date']=str(dates[i][0]) + "/" + str(dates[i][1])
+		dt_time = time.mktime(time.strptime(dt,"%m/%Y"))
+		if tr_time > dt_time:
+			data['balance'] = cur_bal
+		else:
+			while tr_pointer+1 < len(transactions) and dt_time > tr_time:
+				cur_bal = transactions[tr_pointer]['bal']
+				tr_pointer+=1
+				tr_time = time.mktime(time.strptime(transactions[tr_pointer]['date'],DATE_FORMAT))
+			data['balance'] = cur_bal
+		response.append(data)
+	return json.dumps(response)
+		
+		
+
 """
 Helper function to get all
 records from a table in a list

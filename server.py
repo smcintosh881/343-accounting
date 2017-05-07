@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for
 from flask.ext.api import status
-from databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction, getTransactionHistory, get_account_balances,DATE_FORMAT,pay_tax_amount,get_reporting_info
+from databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction, getTransactionHistory, get_account_balances,DATE_FORMAT,pay_tax_amount,get_reporting_info,get_bal_history
 import datetime
 import json
 
@@ -155,6 +155,19 @@ def reporting():
 	if data and data['order']:
 		order = data['order']
 	return getTransactionHistory(order=order)
+
+"""
+Internal API endpoint for getting graph reporting
+data
+"""
+@app.route('/graph',methods=['GET'])
+def graph_data():
+	try:
+		data = get_data_from_request(request)
+		acct = data['id']
+	except:
+		acct = 1
+	return get_bal_history(account=acct)
 	
 """
 Helper function to get the current date as a string
