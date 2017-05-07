@@ -48,6 +48,8 @@ def register_tax_amount(db,amount):
 	account = table.find_one(name="tax")
 	bal = float(account['balance']) + amount
 	table.update(dict(name='tax',balance=bal),['name'])
+	make_tax_transaction(db,amount)
+	
 
 """
 Pay a specified amount of owed taxes
@@ -68,7 +70,7 @@ def pay_tax_amount(db,amount,register=True,accountId=1):
 	table.update(dict(name='tax',balance=bal),['name'])
 	table = db['taxpayments']	
 	taxPayment = {
-		'id': len(table),
+		'transactionid': len(table),
 		'date' : datetime.datetime.now().strftime(DATE_FORMAT),
 		'amount' : amount,
 		'accountid' : accountId
@@ -85,8 +87,8 @@ def make_tax_transaction(db,amount):
 	table = db['taxtransactions']
 	pk = len(table)
 	payload = {
+		'transactionid':pk,
 		'date':datetime.datetime.now().strftime(DATE_FORMAT),
-		'id':pk,
 		'amount':amount
 	}
 	table.insert(payload)
@@ -256,20 +258,20 @@ def get_bal_history(account=1):
 				t['account'] = i['accountid']
 				transactions.append(t)
 	else:
-		table = db['taxTransactions']
+		table = db['taxtransactions']
 		for i in table.all():
 			t = {}
 			t['date'] = i['date']
 			t['amount'] = float(i['amount'])
 			transactions.append(t)
-		table = db['taxPayments']
+		table = db['taxpayments']
 		for i in table.all():
 			t = {}
 			t['date'] = i['date']
 			t['amount'] = float(i['amount'])*-1
 			transactions.append(t)
 	transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'],DATE_FORMAT)))
-	balance = 10e6
+	balance = 10e6 if account==1 else 0
 	for i in range(len(transactions)):
 		balance += transactions[i]['amount']
 		transactions[i]['bal'] = balance
@@ -301,10 +303,10 @@ def get_bal_history(account=1):
 		if tr_time > dt_time:
 			data['balance'] = cur_bal
 		else:
-			while tr_pointer+1 < len(transactions) and dt_time > tr_time:
+			while tr_pointer < len(transactions) and dt_time > tr_time:
 				cur_bal = transactions[tr_pointer]['bal']
-				tr_pointer+=1
 				tr_time = time.mktime(time.strptime(transactions[tr_pointer]['date'],DATE_FORMAT))
+				tr_pointer += 1
 			data['balance'] = cur_bal
 		response.append(data)
 	return json.dumps(response)
