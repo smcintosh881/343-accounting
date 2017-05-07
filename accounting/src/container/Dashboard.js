@@ -40,26 +40,27 @@ class Dashboard extends Component {
                 <Grid>
                     <Grid.Row />
                     <Grid.Row>
-                        <Grid.Column style={{"marginLeft": "40px"}} width={15}>
+                        <Grid.Column style={{"marginLeft": "40px"}} width={12}>
                             <MainChart />
                         </Grid.Column>
-                        <Grid.Column width={1}/>
-                    </Grid.Row>
-                    <Grid.Row>
-                        <Grid.Column width={3} style={{"marginLeft": "40px"}}>
+                        <Grid.Column width={3}>
+                            <div style={{"marginTop": "50%"}}/>
                             <Grid.Row>
-                                <BalanceBox tax={false} balance={accounts.balance} header="Account Balance"/>
+                                <BalanceBox tax={false} balance={accounts.balance} header="Current Balance"/>
                             </Grid.Row>
                             <div style={{"marginTop": "30px"}}/>
                             <Grid.Row>
                                 <BalanceBox payTaxes={this.payTaxes} tax={true} balance={accounts.taxes}
-                                            header="Tax Balance"/>
+                                            header="Taxes Owed"/>
                             </Grid.Row>
                         </Grid.Column>
-                        <Grid.Column width={5}>
+                        <Grid.Column width={1}/>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column width={6} style={{"marginLeft": "40px"}}>
                             <PiChart department={departmentSpending.department} spending={departmentSpending.spending}/>
                         </Grid.Column>
-                        <Grid.Column width={7}>
+                        <Grid.Column width={9}>
                             <RecentTransactions recent={true} history={history.splice(0, 4)}/>
                         </Grid.Column>
                     </Grid.Row>

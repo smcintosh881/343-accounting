@@ -20,7 +20,7 @@ class Demo extends Component {
 
         return (
             <Provider store={store}>
-                <div>
+                <div style={{"marginTop": "40px"}}>
                     <Grid padded>
                         <Grid.Row />
                         <Grid.Row>
