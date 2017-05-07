@@ -1,9 +1,12 @@
 import {combineReducers, createStore} from 'redux'
 import * as actions from '../actions/actionTypes'
-import Moment from 'moment';
 
 function accountBalance(state = {}, action) {
     switch (action.type) {
+        case actions.PAY_TAX:
+            return Object.assign({}, state, {
+                taxes: 0
+            });
         case actions.RECEIVE_BALANCE:
             return Object.assign({}, state, {
                 balance: action.data[0].balance,
@@ -13,10 +16,6 @@ function accountBalance(state = {}, action) {
         default:
             return state
     }
-}
-
-function xAgo(eventTime) {
-    return Moment(eventTime, "MMM DD YYYY HH:mm:ss:SSS").fromNow();
 }
 
 function transactions(state = {history: []}, action) {
@@ -32,7 +31,7 @@ function transactions(state = {history: []}, action) {
                         negative = false;
                     }
                     return {
-                        date: xAgo(transaction.date),
+                        date: transaction.date,
                         amount: transaction.amount,
                         account: transaction.account,
                         transaction: transaction.transaction,

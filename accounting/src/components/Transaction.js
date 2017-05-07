@@ -1,5 +1,6 @@
 import {Component, PropTypes} from 'react';
 import {Table} from 'semantic-ui-react';
+import Moment from 'moment';
 
 export default class Transaction extends Component {
     constructor(props) {
@@ -10,10 +11,14 @@ export default class Transaction extends Component {
         const transaction = this.props.transaction;
         return (
             <Table.Row key={transaction.account} positive={transaction.positive} negative={transaction.negative}>
-                <Table.Cell>{transaction.date}</Table.Cell>
+                {this.props.all ? (
+                        <Table.Cell>{transaction.date}</Table.Cell>
+                    ) : (
+                        <Table.Cell>{Moment(transaction.date, "MMM DD YYYY HH:mm:ss:SSS").fromNow()}</Table.Cell>
+                    )}
                 <Table.Cell>{transaction.account}</Table.Cell>
                 <Table.Cell>{transaction.transaction}</Table.Cell>
-                <Table.Cell>{transaction.amount}</Table.Cell>
+                <Table.Cell textAlign='right'>{transaction.amount}</Table.Cell>
             </Table.Row>
         );
     }
@@ -21,4 +26,5 @@ export default class Transaction extends Component {
 
 Transaction.propTypes = {
     transaction: PropTypes.object,
+    all: PropTypes.bool
 };

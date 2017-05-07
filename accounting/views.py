@@ -149,7 +149,7 @@ Internal API endpoint for paying taxes
 """
 
 
-@app.route('/paytax', methods=['POST'])
+@app.route('/api/paytax', methods=['POST'])
 def pay_tax():
     try:
         data = get_data_from_request(request)

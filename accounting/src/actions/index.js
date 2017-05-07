@@ -1,58 +1,90 @@
 import fetch from 'isomorphic-fetch'
 import * as actions from './actionTypes';
 
+/* ACCOUNT BALANCES */
+
 function requestBalance() {
-  return {
-    type: actions.REQUEST_BALANCE
-  }
+    return {
+        type: actions.REQUEST_BALANCE
+    }
 }
 
 function receiveBalance(json) {
-  return {
-    type: actions.RECEIVE_BALANCE,
-    data: json
-  }
+    return {
+        type: actions.RECEIVE_BALANCE,
+        data: json
+    }
 }
 
 function fetchBalance() {
-  return dispatch => {
-    dispatch(requestBalance());
-    return fetch('/api/accounts')
-      .then(response => response.json())
-      .then(json => dispatch(receiveBalance(json)))
-  }
+    return dispatch => {
+        dispatch(requestBalance());
+        return fetch('/api/accounts')
+            .then(response => response.json())
+            .then(json => dispatch(receiveBalance(json)))
+    }
 }
 
 export function fetchBalanceInitial() {
-  return (dispatch, getState) => {
-      return dispatch(fetchBalance())
-  }
+    return (dispatch, getState) => {
+        return dispatch(fetchBalance())
+    }
 }
 
+/* TRANSACTION HISTORY */
+
 function requestTransactions() {
-  return {
-    type: actions.REQUEST_TRANSACTIONS
-  }
+    return {
+        type: actions.REQUEST_TRANSACTIONS
+    }
 }
 
 function receiveTransactions(json) {
-  return {
-    type: actions.RECEIVE_TRANSACTIONS,
-    data: json
-  }
+    return {
+        type: actions.RECEIVE_TRANSACTIONS,
+        data: json
+    }
 }
 
 function fetchTransactions() {
-  return dispatch => {
-    dispatch(requestTransactions());
-    return fetch('/api/reporting')
-      .then(response => response.json())
-      .then(json => dispatch(receiveTransactions(json)))
-  }
+    return dispatch => {
+        dispatch(requestTransactions());
+        return fetch('/api/reporting')
+            .then(response => response.json())
+            .then(json => dispatch(receiveTransactions(json)))
+    }
 }
 
 export function fetchTransactionsInitial() {
-  return (dispatch) => {
-      return dispatch(fetchTransactions())
-  }
+    return (dispatch) => {
+        return dispatch(fetchTransactions())
+    }
+}
+
+/* PAY TAX */
+
+function pay(json) {
+    return {
+        type: actions.PAY_TAX,
+        data: json
+    }
+}
+
+function postPayTax(payload) {
+    return dispatch => {
+        return fetch('/api/paytax', {
+            method: 'POST',
+            data: {
+                amount: payload.amount
+            }
+        })
+            .then(response => response.json())
+            .then(json => dispatch(pay(json)))
+    }
+}
+
+export function payTaxesAction(payload) {
+    return (dispatch) => {
+        return dispatch(postPayTax(payload))
+    }
 }

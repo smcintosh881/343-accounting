@@ -1,5 +1,6 @@
 import {Component, PropTypes} from 'react';
-import {Segment, Header} from 'semantic-ui-react';
+import {Segment, Header, Grid} from 'semantic-ui-react';
+import PayTaxButton from './PayTaxButton';
 
 export default class BalanceBox extends Component {
     constructor(props) {
@@ -13,7 +14,16 @@ export default class BalanceBox extends Component {
                     {this.props.header}
                 </Header>
                 <Segment attached textAlign='center' compact>
-                    ${this.props.balance}
+                    <Grid.Row>
+                        ${this.props.balance}
+                    </Grid.Row>
+                    {this.props.tax ? (
+                            <Grid.Row>
+                                <PayTaxButton handlePayTax={() => this.props.handlePayTax()} taxBalance={this.props.balance}/>
+                            </Grid.Row>
+                        ) : (
+                            <div></div>
+                        )}
                 </Segment>
             </div>
         );
@@ -22,5 +32,8 @@ export default class BalanceBox extends Component {
 
 BalanceBox.propTypes = {
     balance: PropTypes.number,
-    header: PropTypes.string
+    header: PropTypes.string,
+    tax: PropTypes.bool,
+    handlePayTax: PropTypes.func
+
 };

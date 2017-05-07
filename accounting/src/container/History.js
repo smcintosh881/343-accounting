@@ -2,8 +2,9 @@ import {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {fetchTransactionsInitial} from '../actions/index'
-import {Grid, Segment, Menu, Dropdown, Icon, Input} from 'semantic-ui-react';
+import {Grid, Segment} from 'semantic-ui-react';
 import AllTransactions from '../components/AllTransactions'
+import HistoryMenu from '../components/HistoryMenu';
 
 class History extends Component {
     constructor(props) {
@@ -18,12 +19,6 @@ class History extends Component {
 
     }
 
-    temp() {
-        fetchTransactionsInitial({
-            withdrawal: this.state.withdrawal,
-            type: this.state.type
-        })
-    }
 
     handleClick = (event, data) => {
         let withdrawal = this.state.withdrawal;
@@ -49,40 +44,22 @@ class History extends Component {
 
     render() {
         const history = this.props.history;
-        const tagOptions = ['Inventory', 'Sales', 'Salary'];
+
         return (
             <Segment attached='bottom'>
                 <Grid>
                     <Grid.Row />
                     <Grid.Row>
-                        <Grid.Column width={1} />
-                        <Grid.Column width={14}>
-                            <Menu attached='top'>
-                                <Dropdown item icon='filter' simple>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Header>Transaction</Dropdown.Header>
-                                        {['Inventory', 'Sales', 'Salary'].map((option) =>
-                                            <Dropdown.Item key={option} text={option}
-                                                           onClick={this.handleClick}/>)}
-                                        <Dropdown.Divider />
-                                        <Dropdown.Header>Type</Dropdown.Header>
-                                        {['Withdrawal', 'Deposit'].map((option) =>
-                                            <Dropdown.Item key={option} text={option}
-                                                           onClick={this.handleClick}/>)}
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </Menu>
-                            <Grid>
-                                <Grid.Row>
-                                    <Grid.Column width={1}/>
-                                    <Grid.Column width={16}>
-                                        <AllTransactions recent={false} history={history}/>
-                                    </Grid.Column>
-                                    <Grid.Column width={1}/>
-                                </Grid.Row>
-                            </Grid>
+                        <Grid.Column style={{"marginLeft" : "30px"}} width={2}>
+                            <HistoryMenu />
                         </Grid.Column>
                         <Grid.Column width={1}/>
+                        <Grid.Column width={12}>
+                            <Grid.Column width={1}/>
+                            <Grid.Column width={14}>
+                                <AllTransactions recent={false} history={history}/>
+                            </Grid.Column>
+                        </Grid.Column>
                     </Grid.Row>
                 </Grid>
             </Segment>

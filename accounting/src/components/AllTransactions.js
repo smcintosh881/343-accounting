@@ -26,7 +26,7 @@ export default class AllTransactions extends Component {
         const {column, direction} = this.state;
 
         return (
-            <Table sortable selectable color={this.props.color}>
+            <Table sortable celled selectable color={this.props.color}>
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell sorted={column === 'date' && direction}
@@ -41,7 +41,7 @@ export default class AllTransactions extends Component {
                                           onClick={this.handleSort('transaction')}>
                             Transaction Type
                         </Table.HeaderCell>
-                        <Table.HeaderCell sorted={column === 'amount' && direction}
+                        <Table.HeaderCell textAlign='right' sorted={column === 'amount' && direction}
                                           onClick={this.handleSort('amount')}>
                             Amount
                         </Table.HeaderCell>
@@ -51,10 +51,10 @@ export default class AllTransactions extends Component {
                     <Table.Body>
                         {this.state.direction === "ascending" ? (
                                 _.sortBy(this.props.history, [this.state.column]).map(transaction => {
-                                    return (<Transaction key={transaction.amount} transaction={transaction}/>)
+                                    return (<Transaction all={true} key={transaction.amount} transaction={transaction}/>)
                                 }) ) : (
                                 _.sortBy(this.props.history, [this.state.column]).reverse().map(transaction => {
-                                        return (<Transaction key={transaction.amount} transaction={transaction}/>)
+                                        return (<Transaction all={true} key={transaction.amount} transaction={transaction}/>)
                                     }
                                 )
                             )

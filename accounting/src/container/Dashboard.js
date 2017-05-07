@@ -5,7 +5,7 @@ import BalanceBox from '../components/BalanceBox';
 import MainChart from '../components/MainChart';
 import PiChart from '../components/PiChart';
 import RecentTransactions from '../components/RecentTransactions'
-import {fetchBalanceInitial, fetchTransactionsInitial} from '../actions/index'
+import {fetchBalanceInitial, fetchTransactionsInitial, payTaxesAction} from '../actions/index'
 import {Grid, Segment} from 'semantic-ui-react';
 
 class Dashboard extends Component {
@@ -21,7 +21,12 @@ class Dashboard extends Component {
     componentDidMount() {
         const {dispatch} = this.props;
         dispatch(fetchBalanceInitial());
-        dispatch(fetchTransactionsInitial())
+        dispatch(fetchTransactionsInitial());
+    }
+
+    handlePayTax() {
+        const {dispatch} = this.props;
+        dispatch(payTaxesAction({amount: this.props.accountBalance.taxes}));
     }
 
     render() {
@@ -33,28 +38,27 @@ class Dashboard extends Component {
                 <Grid>
                     <Grid.Row />
                     <Grid.Row>
-                        <Grid.Column width={1}/>
-                        <Grid.Column width={14}>
+                        <Grid.Column style={{"marginLeft": "40px"}} width={15}>
                             <MainChart />
                         </Grid.Column>
                         <Grid.Column width={1}/>
                     </Grid.Row>
                     <Grid.Row>
-                        <Grid.Column width={1}/>
-                        <Grid.Column width={3}>
+                        <Grid.Column width={3} style={{"marginLeft": "40px"}}>
                             <Grid.Row>
-                                <BalanceBox balance={accounts.balance} header="Account Balance"/>
+                                <BalanceBox tax={false} balance={accounts.balance} header="Account Balance"/>
                             </Grid.Row>
-                            <div style={{"marginTop" : "30px"}}/>
+                            <div style={{"marginTop": "30px"}}/>
                             <Grid.Row>
-                                <BalanceBox balance={accounts.taxes} header="Tax Balance"/>
+                                <BalanceBox payTaxes={this.handlePayTax} tax={true} balance={accounts.taxes}
+                                            header="Tax Balance"/>
                             </Grid.Row>
                         </Grid.Column>
                         <Grid.Column width={5}>
                             <PiChart />
                         </Grid.Column>
-                        <Grid.Column width={6}>
-                            <RecentTransactions recent={true} history={history.splice(0,4)}/>
+                        <Grid.Column width={7}>
+                            <RecentTransactions recent={true} history={history.splice(0, 4)}/>
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row />
@@ -76,5 +80,14 @@ function mapStateToProps(state) {
         history: state.transactions.history
     };
 }
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        handlePayTax: (balance) => {
+            dispatch(dispatch(payTaxesAction({amount: balance}))
+            )
+        }
+    }
+};
 
 export default connect(mapStateToProps)(Dashboard)
