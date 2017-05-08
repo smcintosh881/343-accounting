@@ -200,7 +200,7 @@ def graph_data():
 		data = get_data_from_request(request)
 		acct = data['id']
 	except:
-		acct = 2
+		acct = 1
 	return get_bal_history(account=acct)
 
 
