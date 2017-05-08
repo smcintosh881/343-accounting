@@ -1,14 +1,35 @@
 import {Component, PropTypes} from 'react';
-import {Segment, Header, Grid, Divider, Form, Checkbox, Button} from 'semantic-ui-react';
+import {Segment, Header, Grid, Divider, Form, Checkbox, Button, Input} from 'semantic-ui-react';
 import PayTaxButton from './PayTaxButton';
+import {payTaxesAction} from '../../actions/index';
 
 export default class BalanceBox extends Component {
     constructor(props) {
         super(props);
-        let state = ({
-            amount: 0.00
+        this.state = ({
+            amount: null,
         });
     }
+
+    handleInputChange = (event, data) => {
+        this.setState({
+            amount: data.value
+        });
+    };
+
+    handleChecked = (event, data) => {
+        let payment = 0.0;
+        if (data.checked) {
+            payment = this.props.balances.taxes;
+        }
+        this.setState({
+            amount: payment
+        });
+    };
+
+    clickEventHandler = (e) => {
+        this.props.handlePayTaxes(this.state.amount);
+    };
 
     render() {
         return (
@@ -29,16 +50,18 @@ export default class BalanceBox extends Component {
                     <Divider section/>
                     <Grid.Row>
                         <Header as='h4'>Make Payment:</Header>
-                        <Form>
-                            <Form.Field>
-                                Amount:
-                                <input placeholder={'$' + this.props.balances.taxes} />
-                            </Form.Field>
-                            <Form.Field>
-                                <Checkbox label='Full Payment'/>
-                            </Form.Field>
-                            <Button color='teal' type='submit'>Submit</Button>
-                        </Form>
+                        Amount:
+                        <Grid.Row>
+                            <Input onChange={this.handleInputChange} value={this.state.amount}
+                                   placeholder={'$' + this.props.balances.taxes}/>
+                        </Grid.Row>
+                        <div style={{"marginTop": "15px"}}/>
+
+                        <Checkbox onChange={this.handleChecked} label='Full Payment'/>
+                        <div style={{"marginTop": "15px"}}/>
+                        <Grid.Row>
+                            <Button onClick={this.clickEventHandler} color='teal'>Submit</Button>
+                        </Grid.Row>
                     </Grid.Row>
                 </Segment>
             </div>
@@ -48,5 +71,5 @@ export default class BalanceBox extends Component {
 
 BalanceBox.propTypes = {
     balances: PropTypes.object,
-    handlePayTax: PropTypes.func
+    handlePayTaxes: PropTypes.func,
 };

@@ -98,7 +98,7 @@ function pay(json) {
     }
 }
 
-function postPayTax({payload}) {
+function postPayTax(payload) {
     return dispatch => {
         return fetch('/api/paytax', {
             method: 'post',

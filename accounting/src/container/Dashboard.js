@@ -11,6 +11,8 @@ import {Grid, Segment} from 'semantic-ui-react';
 class Dashboard extends Component {
     constructor(props) {
         super(props);
+        this.handlePayTaxes = this.handlePayTaxes.bind(this);
+
         this.state = {
             transactions: {
                 history: []
@@ -25,9 +27,9 @@ class Dashboard extends Component {
         dispatch(fetchTransactionsInitial());
     }
 
-    payTaxes() {
+    handlePayTaxes(amount) {
         const {dispatch} = this.props;
-        dispatch(payTaxesAction({amount: this.props.accountBalance.taxes}));
+        dispatch(payTaxesAction({amount: amount}));
     }
 
     render() {
@@ -45,8 +47,7 @@ class Dashboard extends Component {
                         </Grid.Column>
                         <Grid.Column width={4}>
                             <Grid.Row>
-                                <BalanceBox payTaxes={this.payTaxes} balances={accounts}
-                                            header="Taxes Owed"/>
+                                <BalanceBox handlePayTaxes={this.handlePayTaxes} balances={accounts}/>
                             </Grid.Row>
                         </Grid.Column>
                         <Grid.Column width={1}/>
