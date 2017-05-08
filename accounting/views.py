@@ -9,6 +9,8 @@ import datetime
 import json
 from accounting.databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction, getTransactionHistory, \
     get_account_balances, DATE_FORMAT, pay_tax_amount, get_reporting_info, get_department_spending, get_bal_history
+import authHelper
+app.secret_key = 'crazy frog'
 
 UI_ROUTE_PREFIX = '/ui'
 INVENTORY_TAX = 0.08
@@ -158,7 +160,6 @@ def pay_tax():
         return malformed_request()
     if amount <= 0:
         return malformed_request()
-
     pay_tax_amount(None, amount)
     return get_account_balances()
 
@@ -188,6 +189,40 @@ def reporting():
 def department_spending():
     return get_department_spending()
 
+
+# Auth APIs
+
+@app.route('/api/login', methods=['POST'])
+def login_user():
+    """
+    login a user, JSON should look like this:
+    {
+        token: USER_TOKEN_HERE
+    }
+    """
+    data = get_data_from_request(request)
+    # check that token is in the json and that the token itself is not None, also check vs oAuth provider if valid or not
+    if 'token' in data and data['token'] and authHelper.verify_token(data['token']):
+        authHelper.login_user(data['token'])
+        return ok_status()
+    return malformed_request()
+
+@app.route('/api/currentUserToken', methods=['GET'])
+def get_current_user_token():
+    return jsonify({"token": authHelper.get_current_user()})
+
+
+@app.route('/api/userLoggedIn', methods=['GET'])
+def get_user_logged_in():
+    # resolves to true if token exists because it will be string, if function returns None resolves to false because None is falsey
+    return jsonify({"result": bool(authHelper.get_current_user())})
+
+
+@app.route('/api/logout', methods=['GET'])
+def log_out_user():
+    if authHelper.get_current_user():
+        authHelper.logout_user()
+    return ok_status()
 
 """
 Internal API endpoint for getting graph reporting
