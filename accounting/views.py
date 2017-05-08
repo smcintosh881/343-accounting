@@ -159,7 +159,8 @@ def pay_tax():
     if amount <= 0:
         return malformed_request()
 
-    return malformed_request() if pay_tax_amount(None, amount) == False else ok_status()
+    pay_tax_amount(None, amount)
+    return get_account_balances()
 
 
 """

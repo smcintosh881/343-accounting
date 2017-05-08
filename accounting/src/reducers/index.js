@@ -5,7 +5,7 @@ function accountBalance(state = {}, action) {
     switch (action.type) {
         case actions.PAY_TAX:
             return Object.assign({}, state, {
-                taxes: 0
+                taxes: action.data[1].balance
             });
         case actions.RECEIVE_BALANCE:
             return Object.assign({}, state, {

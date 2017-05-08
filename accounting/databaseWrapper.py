@@ -86,6 +86,7 @@ def pay_tax_amount(db, amount, register=True, accountId=1):
     table.insert(taxPayment)
 
 
+
 """
 Log a tax payment in the database
 
