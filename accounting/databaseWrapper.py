@@ -399,7 +399,7 @@ def get_bal_history(account=1):
     dates.reverse()
     for i in range(len(dates)):
         data = {}
-        if len(transactions) > 0:
+        if len(transactions) > tr_pointer:
             tr_time = time.mktime(time.strptime(transactions[tr_pointer]['date'], DATE_FORMAT))
         else:
             tr_time = -1
