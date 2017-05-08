@@ -10,7 +10,7 @@ export default class PiChart extends Component {
     render() {
         return (
             <div>
-                <Header as='h3' textAlign='center' attached='top' block>
+                <Header as='h3' textAlign='center' attached='top' color='teal' block>
                     Department Spending
                 </Header>
                 <Segment attached={true} textAlign='center'>

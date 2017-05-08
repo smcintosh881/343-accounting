@@ -45,7 +45,7 @@ export default class BalanceBox extends Component {
     render() {
         return (
             <div>
-                <Header as='h3' textAlign='center' attached='top' block>
+                <Header as='h3' color='teal' textAlign='center' attached='top' block>
                     Overview
                 </Header>
                 <Segment color='teal' attached padded={true} textAlign='left' compact>

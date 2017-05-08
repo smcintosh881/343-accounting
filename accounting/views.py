@@ -174,15 +174,15 @@ necessary for Reporting
 def reporting():
     data = get_data_from_request(request)
     order = 1
-    withdrawal = ''
     type = ''
+    transaction = ''
     if data and data['order']:
         order = data['order']
-    if data and data['withdrawal']:
-        withdrawal = data['withdrawal']
     if data and data['type']:
         type = data['type']
-    return getTransactionHistory(order=order, withdrawal=withdrawal, type=type)
+    if data and data['transaction']:
+        transaction = data['transaction']
+    return getTransactionHistory(order=order, type=type, transaction=transaction)
 
 
 @app.route('/api/departmentSpending', methods=['GET'])

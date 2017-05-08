@@ -27,7 +27,7 @@ export default class RecentTransactions extends Component {
         const {column, direction} = this.state;
         return (
             <div>
-                <Header as='h3' textAlign='center' attached='top' block>
+                <Header as='h3' color='teal' textAlign='center' attached='top' block>
                     Recent Activity
                 </Header>
                 <Segment attached textAlign='center' compact>

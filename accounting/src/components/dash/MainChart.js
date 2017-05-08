@@ -10,7 +10,7 @@ export default class MainChart extends Component {
     render() {
         return (
             <div>
-                <Header as='h3' textAlign='center' attached='top' block>
+                <Header as='h3' color='teal' textAlign='center' attached='top' block>
                     Balance Graph
                 </Header>
                 <Segment attached={true} textAlign='center'>

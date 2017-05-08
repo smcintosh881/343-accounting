@@ -6,29 +6,41 @@ export default class HistoryMenu extends Component {
         super(props);
     }
 
-    handleItemClick = (name) => this.setState({activeTransaction: name});
+    clickEventHandler = (event, data) => {
+        let type;
+        let transaction;
+        if (data.name === 'Deposit' || data.name === 'Withdrawal') {
+            type = data.name
+        } else {
+            transaction = data.name
+        }
+        this.setState({
+            transaction: transaction,
+            type: type
+        });
+        this.props.handleFilterTransactions(this.state);
+    };
 
 
     render() {
-        const {activeTransaction} = this.state || {};
-        const {activeItemType} = this.state || {};
-
+        const {transaction, type} = this.state || {};
         return (
             <Menu style={{"width": "12rem"}} vertical>
                 <Menu.Item>
-                    <Menu.Header>Transaction Type</Menu.Header>
+                    <Menu.Header style={{"color": "#00B5AD"}}>Transaction Type</Menu.Header>
                     <Menu.Menu>
-                        <Menu.Item name='Salary' active={activeTransaction === 'salary'}
-                                   onClick={this.handleItemClick}/>
-                        <Menu.Item  name='Inventory' active={activeTransaction === 'inventory'} onClick={this.handleItemClick}/>
-                        <Menu.Item name='Sales' active={activeTransaction === 'sales'} onClick={this.handleItemClick}/>
+                        <Menu.Item name='Salary' active={transaction === 'salary'}
+                                   onClick={this.clickEventHandler}/>
+                        <Menu.Item name='Inventory' active={transaction === 'inventory'}
+                                   onClick={this.clickEventHandler}/>
+                        <Menu.Item name='Sales' active={transaction === 'sales'} onClick={this.clickEventHandler}/>
                     </Menu.Menu>
                 </Menu.Item>
                 <Menu.Item>
-                    <Menu.Header>Type</Menu.Header>
+                    <Menu.Header style={{"color": "#00B5AD"}}>Type</Menu.Header>
                     <Menu.Menu>
-                        <Menu.Item name='Deposit' active={activeItemType === 'deposit'} onClick={this.handleItemClick}/>
-                        <Menu.Item name='Withdrawal' active={activeItemType === 'withdrawal'} onClick={this.handleItemClick}/>
+                        <Menu.Item name='Deposit' active={type === 'deposit'} onClick={this.clickEventHandler}/>
+                        <Menu.Item name='Withdrawal' active={type === 'withdrawal'} onClick={this.clickEventHandler}/>
                     </Menu.Menu>
                 </Menu.Item>
             </Menu>
@@ -36,7 +48,8 @@ export default class HistoryMenu extends Component {
     }
 }
 
-HistoryMenu.propTypes = {};
-
+HistoryMenu.propTypes = {
+    handleFilterTransactions: PropTypes.func
+};
 
 

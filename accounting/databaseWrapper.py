@@ -167,7 +167,7 @@ def salaryTransaction(payload):
     table.insert(payload)
 
 
-def getTransactionHistory(order=1, withdrawal='', type=''):
+def getTransactionHistory(order=1, transaction='', type=''):
     db = get_db()
     table = db['salarytransactions']
     transactions = []
@@ -209,47 +209,47 @@ def getTransactionHistory(order=1, withdrawal='', type=''):
         t['transaction'] = 'Tax'
         taxes.append(t)
 
-    if withdrawal == '' and type == '':
+    if transaction == '' and type == '':
         transactions = salary + sales + inventory + taxes
         transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'], DATE_FORMAT)),
                               reverse=(order == 1))
 
-    if type == '':
+    if transaction == '':
         transactions = np.array(salary + sales + inventory)
-        if withdrawal == 'Withdrawal':
+        if type == 'Withdrawal':
             transactions = transactions[transactions >= 0]
-        if withdrawal == 'Deposit':
+        if type == 'Deposit':
             transactions = transactions[transactions <= 0]
         transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'], DATE_FORMAT)),
                               reverse=(order == 1))
 
-    if type == 'Salary':
+    if transaction == 'Salary':
         transactions = np.array(salary)
 
-        if withdrawal == 'Withdrawal':
+        if type == 'Withdrawal':
             transactions = transactions[transactions >= 0]
-        if withdrawal == 'Deposit':
+        if type == 'Deposit':
             transactions = transactions[transactions <= 0]
 
-    if type == 'Sales':
+    if transaction== 'Sales':
         transactions = np.array(sales)
-        if withdrawal == 'Withdrawal':
+        if type == 'Withdrawal':
             transactions = transactions[transactions >= 0]
-        if withdrawal == 'Deposit':
+        if type == 'Deposit':
             transactions = transactions[transactions <= 0]
 
-    if type == "Inventory":
+    if transaction == "Inventory":
         transactions = np.array(inventory)
-        if withdrawal == 'Withdrawal':
+        if type == 'Withdrawal':
             transactions = transactions[transactions >= 0]
-        if withdrawal == 'Deposit':
+        if type == 'Deposit':
             transactions = transactions[transactions <= 0]
 
-    if type == "Tax":
+    if transaction == "Tax":
         transactions = np.array(taxes)
-        if withdrawal == 'Withdrawal':
+        if type == 'Withdrawal':
             transactions = transactions[transactions >= 0]
-        if withdrawal == 'Deposit':
+        if type == 'Deposit':
             transactions = transactions[transactions <= 0]
 
     return json.dumps(transactions)
