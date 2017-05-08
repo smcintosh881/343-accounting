@@ -35,7 +35,7 @@ class History extends Component {
             withdrawal: withdrawal,
             type: type
         });
-    }
+    };
 
     componentDidMount() {
         const {dispatch} = this.props;
@@ -43,7 +43,7 @@ class History extends Component {
     }
 
     render() {
-        const history = this.props.history;
+        const transactions = this.props.transactions;
 
         return (
             <Segment attached='bottom'>
@@ -55,7 +55,7 @@ class History extends Component {
                         </Grid.Column>
                         <Grid.Column width={1} />
                         <Grid.Column width={12}>
-                            <AllTransactions recent={false} history={history}/>
+                            <AllTransactions recent={false} transactions={transactions}/>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
@@ -66,12 +66,12 @@ class History extends Component {
 
 History.propTypes = {
     dispatch: PropTypes.func.isRequired,
-    history: PropTypes.array
+    transactions: PropTypes.array
 };
 
 function mapStateToProps(state) {
     return {
-        history: state.transactions.history
+        transactions: state.transactions
     };
 }
 

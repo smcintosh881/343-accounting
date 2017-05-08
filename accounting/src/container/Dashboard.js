@@ -5,12 +5,20 @@ import BalanceBox from '../components/dash/BalanceBox';
 import MainChart from '../components/dash/MainChart';
 import PiChart from '../components/dash/PiChart';
 import RecentTransactions from '../components/dash/RecentTransactions'
-import {fetchBalanceInitial, fetchTransactionsInitial, payTaxesAction, fetchSpending} from '../actions/index'
+import {
+    fetchBalanceInitial,
+    fetchTransactionsInitial,
+    payTaxesAction,
+    fetchSpending,
+    accountBalanceGraph
+} from '../actions/index'
 import {Grid, Segment} from 'semantic-ui-react';
 
 class Dashboard extends Component {
     constructor(props) {
         super(props);
+        this.handlePayTaxes = this.handlePayTaxes.bind(this);
+
         this.state = {
             transactions: {
                 history: []
@@ -22,18 +30,19 @@ class Dashboard extends Component {
         const {dispatch} = this.props;
         dispatch(fetchBalanceInitial());
         dispatch(fetchSpending());
+        dispatch(accountBalanceGraph());
         dispatch(fetchTransactionsInitial());
     }
 
-    payTaxes() {
+    handlePayTaxes(amount) {
         const {dispatch} = this.props;
-        dispatch(payTaxesAction({amount: this.props.accountBalance.taxes}));
+        dispatch(payTaxesAction({amount: amount}));
     }
 
     render() {
         const accounts = this.props.accountBalance;
-        const history = this.props.history;
-        const departmentSpending = this.props.departmentSpending;
+        const transactions = this.props.transactions;
+        const graph = this.props.graph;
 
         return (
             <Segment attached='bottom'>
@@ -41,26 +50,25 @@ class Dashboard extends Component {
                     <Grid.Row />
                     <Grid.Row>
                         <Grid.Column style={{"marginLeft": "40px"}} width={11}>
-                            <MainChart />
+                            <MainChart month={graph.month} balances={graph.balances}/>
                         </Grid.Column>
                         <Grid.Column width={4}>
                             <Grid.Row>
-                                <BalanceBox tax={false} balance={accounts.balance} header="Current Balance"/>
-                            </Grid.Row>
-                            <div style={{"marginTop": "30px"}}/>
-                            <Grid.Row>
-                                <BalanceBox payTaxes={this.payTaxes} tax={true} balance={accounts.taxes}
-                                            header="Taxes Owed"/>
+                                <BalanceBox handlePayTaxes={this.handlePayTaxes} balances={accounts}/>
                             </Grid.Row>
                         </Grid.Column>
                         <Grid.Column width={1}/>
                     </Grid.Row>
                     <Grid.Row>
                         <Grid.Column width={6} style={{"marginLeft": "40px"}}>
-                            <PiChart department={departmentSpending.department} spending={departmentSpending.spending}/>
+                            <PiChart department={graph.department} spending={graph.spending}/>
                         </Grid.Column>
                         <Grid.Column width={9}>
-                            <RecentTransactions recent={true} history={history.splice(0, 4)}/>
+                            { Object.keys(transactions).length === 0 ? (
+                                    <RecentTransactions recent={true} history={transactions}/>
+                                ) : (
+                                    <RecentTransactions recent={true} history={transactions.slice(0,4)}/>
+                                )}
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row />
@@ -73,15 +81,16 @@ class Dashboard extends Component {
 Dashboard.propTypes = {
     dispatch: PropTypes.func.isRequired,
     accountBalance: PropTypes.object.isRequired,
-    history: PropTypes.array,
-    departmentSpending: PropTypes.array,
+    transactions: PropTypes.object,
+    graph: PropTypes.object,
+
 };
 
 function mapStateToProps(state) {
     return {
         accountBalance: state.accountBalance,
-        history: state.transactions.history,
-        departmentSpending: state.departmentSpending
+        transactions: state.transactions,
+        graph: state.graph
     };
 }
 

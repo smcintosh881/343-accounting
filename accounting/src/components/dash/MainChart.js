@@ -1,4 +1,4 @@
-import {Component} from 'react';
+import {Component, PropTypes} from 'react';
 import {Segment, Header} from 'semantic-ui-react';
 import {Line} from 'react-chartjs-2';
 
@@ -16,7 +16,7 @@ export default class MainChart extends Component {
                 <Segment attached={true} textAlign='center'>
                     <Line data={
                         {
-                            labels: ['November','December','January', 'February', 'March', 'April', 'May'],
+                            labels: this.props.month,
                             datasets: [
                                 {
                                     label: 'Account Balance',
@@ -37,7 +37,7 @@ export default class MainChart extends Component {
                                     pointHoverBorderWidth: 2,
                                     pointRadius: 1,
                                     pointHitRadius: 10,
-                                    data: [900000, 1000000, 1000000, 900000, 800000]
+                                    data: this.props.balances
                                 }
                             ]
                         }
@@ -47,3 +47,8 @@ export default class MainChart extends Component {
         );
     }
 }
+
+MainChart.propTypes = {
+    month: PropTypes.array,
+    balances: PropTypes.array
+};

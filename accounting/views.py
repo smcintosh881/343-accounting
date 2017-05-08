@@ -8,7 +8,7 @@ from flask.ext.api import status
 import datetime
 import json
 from accounting.databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction, getTransactionHistory, \
-    get_account_balances, DATE_FORMAT, pay_tax_amount, get_reporting_info, get_department_spending
+    get_account_balances, DATE_FORMAT, pay_tax_amount, get_reporting_info, get_department_spending, get_bal_history
 import authHelper
 app.secret_key = 'crazy frog'
 
@@ -160,8 +160,8 @@ def pay_tax():
         return malformed_request()
     if amount <= 0:
         return malformed_request()
-
-    return malformed_request() if pay_tax_amount(None, amount) == False else ok_status()
+    pay_tax_amount(None, amount)
+    return get_account_balances()
 
 
 """
@@ -223,6 +223,21 @@ def log_out_user():
     if authHelper.get_current_user():
         authHelper.logout_user()
     return ok_status()
+
+"""
+Internal API endpoint for getting graph reporting
+data
+"""
+
+
+@app.route('/api/balances', methods=['GET'])
+def graph_data():
+    try:
+        data = get_data_from_request(request)
+        acct = data['id']
+    except:
+        acct = 1
+    return get_bal_history(account=acct)
 
 
 """

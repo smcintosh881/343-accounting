@@ -48,18 +48,16 @@ export default class AllTransactions extends Component {
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    <Table.Body>
-                        {this.state.direction === "ascending" ? (
-                                _.sortBy(this.props.history, [this.state.column]).map(transaction => {
+                    {this.state.direction === "ascending" ? (
+                            _.sortBy(this.props.transactions, [this.state.column]).map(transaction => {
+                                return (<Transaction all={true} key={transaction.amount} transaction={transaction}/>)
+                            }) ) : (
+                            _.sortBy(this.props.transactions, [this.state.column]).reverse().map(transaction => {
                                     return (<Transaction all={true} key={transaction.amount} transaction={transaction}/>)
-                                }) ) : (
-                                _.sortBy(this.props.history, [this.state.column]).reverse().map(transaction => {
-                                        return (<Transaction all={true} key={transaction.amount} transaction={transaction}/>)
-                                    }
-                                )
+                                }
                             )
-                        }
-                    </Table.Body>
+                        )
+                    }
                 </Table.Body>
             </Table>
         )
@@ -67,6 +65,6 @@ export default class AllTransactions extends Component {
 }
 
 AllTransactions.propTypes = {
-    history: PropTypes.arrayOf(PropTypes.object),
+    transactions: PropTypes.array,
 };
 
