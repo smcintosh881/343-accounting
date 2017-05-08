@@ -30,7 +30,7 @@ to Sales, Salary, Inventory and History
 
 @app.route('/')
 def landing():
-    return render_template('landingpage.html')
+    return render_template('./templates/index.html')
 
 
 """

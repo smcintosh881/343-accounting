@@ -20,8 +20,8 @@ export default class PiChart extends Component {
                             datasets: [{
                                 data: this.props.spending,
                                 backgroundColor: [
-                                    '#FF6384',
-                                    '#36A2EB',
+                                    '#00b5ad',
+                                    '#ff4a52',
                                     '#FFCE56'
                                 ],
                             }]
