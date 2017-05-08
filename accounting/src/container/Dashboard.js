@@ -41,8 +41,8 @@ class Dashboard extends Component {
 
     render() {
         const accounts = this.props.accountBalance;
-        const history = this.props.history;
-        const departmentSpending = this.props.departmentSpending;
+        const transactions = this.props.transactions;
+        const graph = this.props.graph;
 
         return (
             <Segment attached='bottom'>
@@ -50,7 +50,7 @@ class Dashboard extends Component {
                     <Grid.Row />
                     <Grid.Row>
                         <Grid.Column style={{"marginLeft": "40px"}} width={11}>
-                            <MainChart month={this.props.graph.month} balances={this.props.graph.balances}/>
+                            <MainChart month={graph.month} balances={graph.balances}/>
                         </Grid.Column>
                         <Grid.Column width={4}>
                             <Grid.Row>
@@ -61,10 +61,14 @@ class Dashboard extends Component {
                     </Grid.Row>
                     <Grid.Row>
                         <Grid.Column width={6} style={{"marginLeft": "40px"}}>
-                            <PiChart department={departmentSpending.department} spending={departmentSpending.spending}/>
+                            <PiChart department={graph.department} spending={graph.spending}/>
                         </Grid.Column>
                         <Grid.Column width={9}>
-                            <RecentTransactions recent={true} history={history.splice(0, 4)}/>
+                            { Object.keys(transactions).length === 0 ? (
+                                    <RecentTransactions recent={true} history={transactions}/>
+                                ) : (
+                                    <RecentTransactions recent={true} history={transactions.slice(0,4)}/>
+                                )}
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row />
@@ -77,17 +81,15 @@ class Dashboard extends Component {
 Dashboard.propTypes = {
     dispatch: PropTypes.func.isRequired,
     accountBalance: PropTypes.object.isRequired,
-    history: PropTypes.array,
-    departmentSpending: PropTypes.object,
-    graph: PropTypes.array,
+    transactions: PropTypes.object,
+    graph: PropTypes.object,
 
 };
 
 function mapStateToProps(state) {
     return {
         accountBalance: state.accountBalance,
-        history: state.transactions.history,
-        departmentSpending: state.departmentSpending,
+        transactions: state.transactions,
         graph: state.graph
     };
 }

@@ -69,6 +69,7 @@ function requestTransactions() {
     }
 }
 
+
 function receiveTransactions(json) {
     return {
         type: actions.RECEIVE_TRANSACTIONS,
@@ -81,8 +82,7 @@ function fetchTransactions() {
         dispatch(requestTransactions());
         return fetch('/api/reporting')
             .then(response => response.json())
-            .then(json => dispatch(receiveTransactions(json).then(json => receiveBalance(json))))
-
+            .then(json => dispatch(receiveTransactions(json)))
     }
 }
 

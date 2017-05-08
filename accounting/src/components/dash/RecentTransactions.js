@@ -72,5 +72,5 @@ export default class RecentTransactions extends Component {
 }
 
 RecentTransactions.propTypes = {
-    history: PropTypes.arrayOf(PropTypes.object),
+    history: PropTypes.object,
 };

@@ -174,6 +174,7 @@ def getTransactionHistory(order=1, withdrawal='', type=''):
     salary = []
     sales = []
     inventory = []
+    taxes = []
     for i in table.all():
         t = {}
         t['date'] = i['date']
@@ -181,6 +182,7 @@ def getTransactionHistory(order=1, withdrawal='', type=''):
         t['account'] = i['accountid']
         t['transaction'] = 'Salary'
         salary.append(t)
+
     table = db['salestransactions']
     for i in table.all():
         t = {}
@@ -189,6 +191,7 @@ def getTransactionHistory(order=1, withdrawal='', type=''):
         t['account'] = i['accountid']
         t['transaction'] = 'Sales'
         sales.append(t)
+
     table = db['inventorytransactions']
     for i in table.all():
         t = {}
@@ -198,8 +201,16 @@ def getTransactionHistory(order=1, withdrawal='', type=''):
         t['transaction'] = 'Inventory'
         inventory.append(t)
 
+    table = db['taxpayments']
+    for i in table.all():
+        t = {}
+        t['date'] = i['date']
+        t['amount'] = float(i['amount']) * -1
+        t['transaction'] = 'Tax'
+        taxes.append(t)
+
     if withdrawal == '' and type == '':
-        transactions = salary + sales + inventory
+        transactions = salary + sales + inventory + taxes
         transactions = sorted(transactions, key=lambda k: time.mktime(time.strptime(k['date'], DATE_FORMAT)),
                               reverse=(order == 1))
 
@@ -229,6 +240,13 @@ def getTransactionHistory(order=1, withdrawal='', type=''):
 
     if type == "Inventory":
         transactions = np.array(inventory)
+        if withdrawal == 'Withdrawal':
+            transactions = transactions[transactions >= 0]
+        if withdrawal == 'Deposit':
+            transactions = transactions[transactions <= 0]
+
+    if type == "Tax":
+        transactions = np.array(taxes)
         if withdrawal == 'Withdrawal':
             transactions = transactions[transactions >= 0]
         if withdrawal == 'Deposit':
@@ -334,7 +352,7 @@ def get_bal_history(account=1):
                 t = {}
                 t['date'] = i['date']
                 t['amount'] = float(i['posttaxamount'] - i['taxamount']) * (
-                -1 if i['transactiontype'] == 'withdrawal' else 1)
+                    -1 if i['transactiontype'] == 'withdrawal' else 1)
                 t['account'] = i['accountid']
                 transactions.append(t)
         table = db['inventorytransactions']
