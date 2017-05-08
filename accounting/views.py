@@ -10,6 +10,7 @@ import json
 from accounting.databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction, getTransactionHistory, \
     get_account_balances, DATE_FORMAT, pay_tax_amount, get_reporting_info, get_department_spending, get_bal_history
 import authHelper
+
 app.secret_key = 'crazy frog'
 
 UI_ROUTE_PREFIX = '/ui'
@@ -174,15 +175,15 @@ necessary for Reporting
 def reporting():
     data = get_data_from_request(request)
     order = 1
-    type = ''
-    transaction = ''
-    if data and data['order']:
+    withdrawal = ''
+    t = ''
+    if data and 'order' in data.keys():
         order = data['order']
-    if data and data['type']:
-        type = data['type']
-    if data and data['transaction']:
-        transaction = data['transaction']
-    return getTransactionHistory(order=order, type=type, transaction=transaction)
+    if data and 'withdrawal' in data.keys():
+        withdrawal = data['withdrawal']
+    if data and 'type' in data.keys():
+        t = data['type']
+    return getTransactionHistory(order=order, withdrawal=withdrawal, type=t)
 
 
 @app.route('/api/departmentSpending', methods=['GET'])
@@ -207,6 +208,7 @@ def login_user():
         return ok_status()
     return malformed_request()
 
+
 @app.route('/api/currentUserToken', methods=['GET'])
 def get_current_user_token():
     return jsonify({"token": authHelper.get_current_user()})
@@ -223,6 +225,7 @@ def log_out_user():
     if authHelper.get_current_user():
         authHelper.logout_user()
     return ok_status()
+
 
 """
 Internal API endpoint for getting graph reporting

@@ -251,8 +251,7 @@ def getTransactionHistory(order=1, transaction='', type=''):
             transactions = transactions[transactions >= 0]
         if type == 'Deposit':
             transactions = transactions[transactions <= 0]
-
-    return json.dumps(transactions)
+    return json.dumps(list(transactions))
 
 
 """
