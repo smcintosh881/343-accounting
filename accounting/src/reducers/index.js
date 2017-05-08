@@ -4,9 +4,6 @@ import * as actions from '../actions/actionTypes'
 function accountBalance(state = {}, action) {
     switch (action.type) {
         case actions.PAY_TAX:
-            return Object.assign({}, state, {
-                taxes: action.data[1].balance
-            });
         case actions.RECEIVE_BALANCE:
             return Object.assign({}, state, {
                 balance: action.data[0].balance,
