@@ -1,5 +1,6 @@
 # JetBrains IDE Files
 .idea/*
+accounting/.idea/*
 
 # databases
 *.db
@@ -17,7 +18,7 @@ local/*
 lib/*
 
 # npm modules
-node_modules/*
+accounting/node_modules
 
 # installed bower components
 static/bower_components/*

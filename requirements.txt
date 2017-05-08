@@ -3,3 +3,4 @@ dataset
 Flask-API
 requests
 psycopg2
+numpy
