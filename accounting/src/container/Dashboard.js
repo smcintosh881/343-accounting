@@ -45,11 +45,7 @@ class Dashboard extends Component {
                         </Grid.Column>
                         <Grid.Column width={4}>
                             <Grid.Row>
-                                <BalanceBox tax={false} balance={accounts.balance} header="Current Balance"/>
-                            </Grid.Row>
-                            <div style={{"marginTop": "30px"}}/>
-                            <Grid.Row>
-                                <BalanceBox payTaxes={this.payTaxes} tax={true} balance={accounts.taxes}
+                                <BalanceBox payTaxes={this.payTaxes} balances={accounts}
                                             header="Taxes Owed"/>
                             </Grid.Row>
                         </Grid.Column>
