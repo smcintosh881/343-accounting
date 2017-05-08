@@ -50,6 +50,7 @@ function graph(state = {}, action) {
     }
 
 }
+
 function transactions(state = {history: []}, action) {
     switch (action.type) {
         case actions.RECEIVE_TRANSACTIONS:

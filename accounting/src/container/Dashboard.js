@@ -78,7 +78,7 @@ Dashboard.propTypes = {
     dispatch: PropTypes.func.isRequired,
     accountBalance: PropTypes.object.isRequired,
     history: PropTypes.array,
-    departmentSpending: PropTypes.array,
+    departmentSpending: PropTypes.object,
     graph: PropTypes.array,
 
 };
