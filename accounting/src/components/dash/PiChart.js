@@ -14,7 +14,6 @@ export default class PiChart extends Component {
                     Department Spending
                 </Header>
                 <Segment attached={true} textAlign='center'>
-                    {JSON.stringify(this.props.departmentSpending)}
                     <Doughnut data={
                         {
                             labels: this.props.department,

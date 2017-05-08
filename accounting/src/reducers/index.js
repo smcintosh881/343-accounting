@@ -15,6 +15,7 @@ function accountBalance(state = {}, action) {
     }
 }
 
+
 function departmentSpending(state = {}, action) {
     switch (action.type) {
         case actions.RECEIVE_SPENDING:
@@ -32,6 +33,23 @@ function departmentSpending(state = {}, action) {
     }
 }
 
+
+function graph(state = {}, action) {
+    switch (action.type) {
+        case actions.RECEIVE_ACCOUNT_BALANCE_GRAPH:
+            return Object.assign({}, state, {
+                month: action.data.map(object => {
+                    return object.date;
+                }),
+                balances: action.data.map(object => {
+                    return parseInt(object.balance, 10);
+                }),
+            });
+        default:
+            return state
+    }
+
+}
 function transactions(state = {history: []}, action) {
     switch (action.type) {
         case actions.RECEIVE_TRANSACTIONS:
@@ -61,7 +79,7 @@ function transactions(state = {history: []}, action) {
 }
 
 const rootReducer = combineReducers({
-    accountBalance, transactions, departmentSpending
+    accountBalance, transactions, departmentSpending, graph
 });
 
 let store = createStore(rootReducer);
