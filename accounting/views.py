@@ -8,7 +8,7 @@ from flask.ext.api import status
 import datetime
 import json
 from accounting.databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction, getTransactionHistory, \
-    get_account_balances, DATE_FORMAT, pay_tax_amount, get_reporting_info, get_department_spending,get_bal_history
+    get_account_balances, DATE_FORMAT, pay_tax_amount, get_reporting_info, get_department_spending, get_bal_history
 
 UI_ROUTE_PREFIX = '/ui'
 INVENTORY_TAX = 0.08
@@ -159,7 +159,8 @@ def pay_tax():
     if amount <= 0:
         return malformed_request()
 
-    return malformed_request() if pay_tax_amount(None, amount) == False else ok_status()
+    pay_tax_amount(None, amount)
+    return get_account_balances()
 
 
 """
@@ -194,14 +195,14 @@ data
 """
 
 
-@app.route('/api/balances',methods=['GET'])
+@app.route('/api/balances', methods=['GET'])
 def graph_data():
-	try:
-		data = get_data_from_request(request)
-		acct = data['id']
-	except:
-		acct = 1
-	return get_bal_history(account=acct)
+    try:
+        data = get_data_from_request(request)
+        acct = data['id']
+    except:
+        acct = 1
+    return get_bal_history(account=acct)
 
 
 """

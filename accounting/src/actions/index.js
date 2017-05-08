@@ -25,6 +25,14 @@ function fetchBalance() {
     }
 }
 
+export function fetchBalanceInitial() {
+    return (dispatch) => {
+        return dispatch(fetchBalance());
+    }
+}
+
+/* Department Spending PiChart */
+
 function requestDepartmentSpending() {
     return {
         type: actions.REQUEST_SPENDING
@@ -53,12 +61,6 @@ export function fetchSpending() {
     }
 }
 
-export function fetchBalanceInitial() {
-    return (dispatch) => {
-        return dispatch(fetchBalance());
-    }
-}
-
 /* TRANSACTION HISTORY */
 
 function requestTransactions() {
@@ -66,6 +68,7 @@ function requestTransactions() {
         type: actions.REQUEST_TRANSACTIONS
     }
 }
+
 
 function receiveTransactions(json) {
     return {
@@ -98,7 +101,7 @@ function pay(json) {
     }
 }
 
-function postPayTax({payload}) {
+function postPayTax(payload) {
     return dispatch => {
         return fetch('/api/paytax', {
             method: 'post',
@@ -111,5 +114,28 @@ function postPayTax({payload}) {
 export function payTaxesAction(payload) {
     return (dispatch) => {
         return dispatch(postPayTax(payload))
+    }
+}
+
+/* Account Balance Line Graph */
+
+function receiveAccountBalance(json) {
+    return {
+        type: actions.RECEIVE_ACCOUNT_BALANCE_GRAPH,
+        data: json
+    }
+}
+
+function accountBalance(payload) {
+    return dispatch => {
+        return fetch('/api/balances')
+            .then(response => response.json())
+            .then(json => dispatch(receiveAccountBalance(json)))
+    }
+}
+
+export function accountBalanceGraph(payload) {
+    return (dispatch) => {
+        return dispatch(accountBalance(payload))
     }
 }

@@ -11,7 +11,7 @@ new WebpackDevServer(webpack(config), {
     colors: true,
   },
   proxy: {
-    '/api/*': 'http://localhost:5000',
+    '**': 'http://localhost:5000',
   },
 }).listen(3000, 'localhost', (err) => {
   if (err) {
