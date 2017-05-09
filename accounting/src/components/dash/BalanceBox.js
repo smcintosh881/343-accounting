@@ -26,11 +26,14 @@ export default class BalanceBox extends Component {
 
     handleChecked = (event, data) => {
         let payment = '0.00';
+        var disabled = true;
         if (data.checked) {
             payment = this.props.balances.taxes;
+            var disabled = false;
         }
         this.setState({
-            amount: payment
+            amount: payment,
+            disabled : disabled
         });
     };
 
