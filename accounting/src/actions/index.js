@@ -63,6 +63,32 @@ export function fetchSpending() {
 
 /* TRANSACTION HISTORY */
 
+function filterTransactions(payload) {
+    return (dispatch) => {
+        console.log(payload);
+        return fetch('/api/reporting', {
+            method: 'get',
+            body: JSON.stringify(payload)
+        })
+            .then(response => response.json())
+            .then(json => dispatch(ReceiveFilterTransactions(json)))
+    }
+}
+
+function ReceiveFilterTransactions(json) {
+    console.log(json);
+    return {
+        type: actions.RECEIVE_FILTERED_TRANSACTIONS,
+        data: json
+    }
+}
+
+export function fetchFilterTransactions(payload) {
+    return (dispatch) => {
+        return dispatch(filterTransactions(payload))
+    }
+}
+
 function requestTransactions() {
     return {
         type: actions.REQUEST_TRANSACTIONS

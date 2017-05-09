@@ -167,7 +167,6 @@ def salaryTransaction(payload):
     register_tax_amount(db, payload['taxamount'])
     table.insert(payload)
 
-
 def getTransactionHistory(order=1, withdrawal='', type=''):
     db = get_db()
     table = db['salarytransactions']

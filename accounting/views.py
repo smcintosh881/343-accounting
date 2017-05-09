@@ -10,6 +10,7 @@ import json
 from accounting.databaseWrapper import salesTransaction, salaryTransaction, inventoryTransaction, getTransactionHistory, \
     get_account_balances, DATE_FORMAT, pay_tax_amount, get_reporting_info, get_department_spending, get_bal_history
 import authHelper
+
 app.secret_key = 'crazy frog'
 
 UI_ROUTE_PREFIX = '/ui'
@@ -32,7 +33,7 @@ to Sales, Salary, Inventory and History
 
 @app.route('/')
 def landing():
-    return render_template('landingpage.html')
+    return render_template('./templates/index.html')
 
 
 """
@@ -206,6 +207,7 @@ def login_user():
         return ok_status()
     return malformed_request()
 
+
 @app.route('/api/currentUserToken', methods=['GET'])
 def get_current_user_token():
     return jsonify({"token": authHelper.get_current_user()})
@@ -222,6 +224,7 @@ def log_out_user():
     if authHelper.get_current_user():
         authHelper.logout_user()
     return ok_status()
+
 
 """
 Internal API endpoint for getting graph reporting

@@ -6,8 +6,8 @@ function accountBalance(state = {}, action) {
         case actions.PAY_TAX:
         case actions.RECEIVE_BALANCE:
             return Object.assign({}, state, {
-                balance: action.data[0].balance,
-                taxes: action.data[1].balance,
+                balance: action.data[0].balance.toLocaleString(),
+                taxes: action.data[1].balance.toLocaleString(),
             });
         case actions.REQUEST_BALANCE:
         default:
@@ -60,6 +60,8 @@ function transactions(state = {}, action) {
                     negative: negative
                 }
             });
+        case actions.RECEIVE_FILTERED_TRANSACTIONS:
+            return action.data;
         default:
             return state
     }
