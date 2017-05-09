@@ -65,18 +65,27 @@ export function fetchSpending() {
 
 function filterTransactions(payload) {
     return (dispatch) => {
-        dispatch(requestTransactions());
+        console.log(payload);
         return fetch('/api/reporting', {
             method: 'get',
             body: JSON.stringify(payload)
-        }).then(response => response.json())
-            .then(json => dispatch(receiveTransactions(json)))
+        })
+            .then(response => response.json())
+            .then(json => dispatch(ReceiveFilterTransactions(json)))
     }
 }
 
-export function fetchFilterTransactions() {
+function ReceiveFilterTransactions(json) {
+    console.log(json);
+    return {
+        type: actions.RECEIVE_FILTERED_TRANSACTIONS,
+        data: json
+    }
+}
+
+export function fetchFilterTransactions(payload) {
     return (dispatch) => {
-        return dispatch(filterTransactions())
+        return dispatch(filterTransactions(payload))
     }
 }
 

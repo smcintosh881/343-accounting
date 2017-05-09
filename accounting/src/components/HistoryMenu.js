@@ -1,55 +1,88 @@
 import {Component, PropTypes} from 'react';
-import {Menu, Dropdown, Icon, Input} from 'semantic-ui-react';
+import {Menu, Dropdown, Icon, Input, Checkbox, Button} from 'semantic-ui-react';
 
 export default class HistoryMenu extends Component {
     constructor(props) {
         super(props);
     }
 
-    clickEventHandler = (event, data) => {
-        let type;
-        let transaction;
-        if (data.name === 'Deposit' || data.name === 'Withdrawal') {
-            type = data.name
-        } else {
-            transaction = data.name
-        }
-        this.setState({
-            transaction: transaction,
-            type: type
-        });
-        this.props.handleFilterTransactions(this.state);
+    state = {};
+
+    handleTransactionChange = (e, {value}) => {
+        this.setState({transaction: value});
     };
 
+    handleTypeChange = (e, {value}) => {
+        this.setState({type: value});
+    };
+
+    clickEventHandler = (e) => {
+        this.props.handleFilters(this.state.transaction, this.state.type);
+    };
 
     render() {
         const {transaction, type} = this.state || {};
         return (
-            <Menu style={{"width": "12rem"}} vertical>
-                <Menu.Item>
-                    <Menu.Header style={{"color": "#00B5AD"}}>Transaction Type</Menu.Header>
-                    <Menu.Menu>
-                        <Menu.Item name='Salary' active={transaction === 'salary'}
-                                   onClick={this.clickEventHandler}/>
-                        <Menu.Item name='Inventory' active={transaction === 'inventory'}
-                                   onClick={this.clickEventHandler}/>
-                        <Menu.Item name='Sales' active={transaction === 'sales'} onClick={this.clickEventHandler}/>
-                    </Menu.Menu>
-                </Menu.Item>
-                <Menu.Item>
-                    <Menu.Header style={{"color": "#00B5AD"}}>Type</Menu.Header>
-                    <Menu.Menu>
-                        <Menu.Item name='Deposit' active={type === 'deposit'} onClick={this.clickEventHandler}/>
-                        <Menu.Item name='Withdrawal' active={type === 'withdrawal'} onClick={this.clickEventHandler}/>
-                    </Menu.Menu>
-                </Menu.Item>
-            </Menu>
+            <div>
+                <Menu style={{"width": "12rem"}} vertical>
+                    <Menu.Item>
+                        <Menu.Header style={{"color": "#00B5AD"}}>Transaction Type</Menu.Header>
+                        <Menu.Menu>
+                            <Menu.Item active={transaction === 'salary'}>
+                                <Checkbox radio
+                                          value='Salary'
+                                          checked={this.state.transaction === 'Salary'}
+                                          onChange={this.handleTransactionChange}
+                                          label='Salary'/>
+                            </Menu.Item>
+                            <Menu.Item active={transaction === 'Inventory'}>
+                                <Checkbox radio
+                                          value='Inventory'
+                                          checked={this.state.transaction === 'Inventory'}
+                                          onChange={this.handleTransactionChange}
+                                          label='Inventory'/>
+                            </Menu.Item>
+                            <Menu.Item active={transaction === 'Sales'}>
+                                <Checkbox radio
+                                          value='Sales'
+                                          checked={this.state.transaction === 'Sales'}
+                                          onChange={this.handleTransactionChange}
+                                          label='Sales'/>
+                            </Menu.Item>
+                        </Menu.Menu>
+                    </Menu.Item>
+                    <Menu.Item>
+                        <Menu.Header as='h2' style={{"color": "#00B5AD"}}>Type</Menu.Header>
+                        <Menu.Menu>
+                            <Menu.Item active={type === 'deposit'}>
+                                <Checkbox radio
+                                          value='Deposit'
+                                          checked={this.state.type === 'Deposit'}
+                                          onChange={this.handleTypeChange}
+                                          label='Deposit'/>
+                            </Menu.Item>
+                            <Menu.Item active={type === 'Withdrawal'}>
+                                <Checkbox radio
+                                          value='Withdrawal'
+                                          checked={this.state.type === 'Withdrawal'}
+                                          onChange={this.handleTypeChange}
+                                          label='Withdrawal'/>
+                            </Menu.Item>
+                        </Menu.Menu>
+                    </Menu.Item>
+                </Menu>
+                <Button
+                    onClick={this.clickEventHandler}
+                    style={{"marginLeft": "75%"}}
+                    content='Search'
+                    color='teal'/>
+            </div>
         )
     }
 }
 
 HistoryMenu.propTypes = {
-    handleFilterTransactions: PropTypes.func
+    handleFilters: PropTypes.func
 };
 
 

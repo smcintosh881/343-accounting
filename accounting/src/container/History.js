@@ -2,20 +2,19 @@ import {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {fetchTransactionsInitial, fetchFilterTransactions} from '../actions/index'
-import {Grid, Segment} from 'semantic-ui-react';
+import {Grid, Segment, Button, Icon} from 'semantic-ui-react';
 import AllTransactions from '../components/AllTransactions'
 import HistoryMenu from '../components/HistoryMenu';
 
 class History extends Component {
     constructor(props) {
         super(props);
-        this.handleFilterTransactions = this.handleFilterTransactions.bind(this);
+        this.handleFilters = this.handleFilters.bind(this);
         this.state = {
             transactions: {
                 history: []
             },
         };
-
     }
 
     componentDidMount() {
@@ -23,10 +22,9 @@ class History extends Component {
         dispatch(fetchTransactionsInitial());
     }
 
-    handleFilterTransactions(filters) {
+    handleFilters(withdrawal, type) {
         const {dispatch} = this.props;
-        console.log(filters);
-        dispatch(fetchFilterTransactions(filters));
+        dispatch(fetchFilterTransactions({type: type, withdrawal: withdrawal}));
     }
 
     render() {
@@ -38,7 +36,7 @@ class History extends Component {
                     <Grid.Row />
                     <Grid.Row>
                         <Grid.Column style={{"marginLeft": "30px"}} width={2}>
-                            <HistoryMenu handleFilterTransactions={this.handleFilterTransactions}/>
+                            <HistoryMenu handleFilters={this.handleFilters}/>
                         </Grid.Column>
                         <Grid.Column width={1}/>
                         <Grid.Column width={12}>

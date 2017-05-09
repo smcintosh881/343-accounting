@@ -70,7 +70,7 @@ class Dashboard extends Component {
                                     <RecentTransactions recent={true} history={transactions.slice(0,4)}/>
                                 )}
                         </Grid.Column>
-                    </Grid.Row>
+                        </Grid.Row>
                     <Grid.Row />
                 </Grid>
             </Segment>
