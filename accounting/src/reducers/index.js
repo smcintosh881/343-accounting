@@ -65,8 +65,19 @@ function transactions(state = {}, action) {
     }
 }
 
+function checkUserLoggedIn(state = {}, action) {
+    switch (action.type) {
+        case actions.RECEIVE_USER_LOGGED_IN:
+            return Object.assign({}, state, {
+                userLoggedIn: action.data.userLoggedIn
+            });
+        default:
+            return state;
+    }
+}
+
 const rootReducer = combineReducers({
-    accountBalance, transactions, graph
+    accountBalance, transactions, graph, checkUserLoggedIn
 });
 
 

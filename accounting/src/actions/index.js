@@ -139,3 +139,27 @@ export function accountBalanceGraph(payload) {
         return dispatch(accountBalance(payload))
     }
 }
+
+/* auth */
+
+function requestUserLoggedIn() {
+    return {
+        type: actions.REQUEST_USER_LOGGED_IN,
+    }
+}
+
+function recieveUserLoggedIn(json) {
+    return {
+        type: actions.RECEIVE_USER_LOGGED_IN,
+        data: json
+    }
+}
+
+export function fetchUserLoggedIn() {
+    return dispatch => {
+        dispatch(requestUserLoggedIn());
+        return fetch('/api/userLoggedIn')
+            .then(response => response.json())
+            .then(json => dispatch(recieveUserLoggedIn(json)))
+    }
+}

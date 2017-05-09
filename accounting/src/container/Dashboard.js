@@ -4,15 +4,17 @@ import {bindActionCreators} from 'redux';
 import BalanceBox from '../components/dash/BalanceBox';
 import MainChart from '../components/dash/MainChart';
 import PiChart from '../components/dash/PiChart';
+import LoginRequired from '../components/LoginRequired';
 import RecentTransactions from '../components/dash/RecentTransactions'
 import {
     fetchBalanceInitial,
     fetchTransactionsInitial,
+    fetchUserLoggedIn,
     payTaxesAction,
     fetchSpending,
     accountBalanceGraph
 } from '../actions/index'
-import {Grid, Segment} from 'semantic-ui-react';
+import {Grid, Segment, Header} from 'semantic-ui-react';
 
 class Dashboard extends Component {
     constructor(props) {
@@ -28,6 +30,7 @@ class Dashboard extends Component {
 
     componentDidMount() {
         const {dispatch} = this.props;
+        dispatch(fetchUserLoggedIn());
         dispatch(fetchBalanceInitial());
         dispatch(fetchSpending());
         dispatch(accountBalanceGraph());
@@ -43,8 +46,9 @@ class Dashboard extends Component {
         const accounts = this.props.accountBalance;
         const transactions = this.props.transactions;
         const graph = this.props.graph;
+        const userLoggedIn = this.props.userLoggedIn;
 
-        return (
+        return userLoggedIn ? (
             <Segment attached='bottom'>
                 <Grid>
                     <Grid.Row />
@@ -74,11 +78,12 @@ class Dashboard extends Component {
                     <Grid.Row />
                 </Grid>
             </Segment>
-        )
+        ) : <LoginRequired/>;
     }
 }
 
 Dashboard.propTypes = {
+    userLoggedIn: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     accountBalance: PropTypes.object.isRequired,
     transactions: PropTypes.object,
@@ -88,6 +93,7 @@ Dashboard.propTypes = {
 
 function mapStateToProps(state) {
     return {
+        userLoggedIn: state.userLoggedIn,
         accountBalance: state.accountBalance,
         transactions: state.transactions,
         graph: state.graph

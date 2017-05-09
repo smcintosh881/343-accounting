@@ -1,9 +1,13 @@
 import {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {fetchTransactionsInitial} from '../actions/index'
+import {
+    fetchTransactionsInitial,
+    fetchUserLoggedIn
+} from '../actions/index'
 import {Grid, Segment} from 'semantic-ui-react';
 import AllTransactions from '../components/AllTransactions'
+import LoginRequired from '../components/LoginRequired'
 import HistoryMenu from '../components/HistoryMenu';
 
 class History extends Component {
@@ -39,13 +43,15 @@ class History extends Component {
 
     componentDidMount() {
         const {dispatch} = this.props;
+        dispatch(fetchUserLoggedIn());
         dispatch(fetchTransactionsInitial());
     }
 
     render() {
         const transactions = this.props.transactions;
+        const userLoggedIn = this.props.userLoggedIn;
 
-        return (
+        return userLoggedIn ? (
             <Segment attached='bottom'>
                 <Grid>
                     <Grid.Row />
@@ -60,17 +66,19 @@ class History extends Component {
                     </Grid.Row>
                 </Grid>
             </Segment>
-        )
+        ) : <LoginRequired/>;
     }
 }
 
 History.propTypes = {
+    userLoggedIn: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     transactions: PropTypes.array
 };
 
 function mapStateToProps(state) {
     return {
+        userLoggedIn: state.userLoggedIn,
         transactions: state.transactions
     };
 }
