@@ -60,7 +60,6 @@ class ServerTester(unittest.TestCase):
         self.assertEqual(entry['salesid'], salesId)
         balance = self.accountsTable.find_one(id=1)['balance']
         self.assertEqual(self.startingBalance + float(entry['posttaxamount']), balance)
-        taxBalance = self.accountsTable.find_one(id=2)['balance']
 
 
     def test_salewithdrawal_table_updated(self):
