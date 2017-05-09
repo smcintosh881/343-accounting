@@ -174,14 +174,14 @@ def reporting():
     data = get_data_from_request(request)
     order = 1
     withdrawal = ''
-    type = ''
-    if data and data['order']:
+    t = ''
+    if data and 'order' in data.keys():
         order = data['order']
-    if data and data['withdrawal']:
+    if data and 'withdrawal' in data.keys():
         withdrawal = data['withdrawal']
-    if data and data['type']:
-        type = data['type']
-    return getTransactionHistory(order=order, withdrawal=withdrawal, type=type)
+    if data and 'type' in data.keys():
+        t = data['type']
+    return getTransactionHistory(order=order, withdrawal=withdrawal, type=t)
 
 
 @app.route('/api/departmentSpending', methods=['GET'])
