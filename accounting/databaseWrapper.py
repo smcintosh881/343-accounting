@@ -141,7 +141,8 @@ def salesTransaction(payload):
     pk = len(table)
     add_id_and_account_to_payload(payload, pk)
     action = withdraw_amount if payload['transactiontype'] == 'withdrawal' else deposit_amount
-    if action(db, payload['posttaxamount'] - payload['taxamount']) == False:
+    amount = (payload['posttaxamount'] - payload['taxamount']) if payload['transactiontype'] == 'withdrawal' else payload['posttaxamount']
+    if action(db, amount) == False:
         return False
     if payload['transactiontype'] == 'withdrawal':
         if pay_tax_amount(db, payload['taxamount'], register=False) == False:
