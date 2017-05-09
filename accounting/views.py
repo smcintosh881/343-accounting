@@ -159,9 +159,8 @@ def pay_tax():
         amount = float(data['amount'])
     except:
         return malformed_request()
-    if amount <= 0:
+    if amount <= 0 or pay_tax_amount(None, amount) == False:
         return malformed_request()
-    pay_tax_amount(None, amount)
     return get_account_balances()
 
 
