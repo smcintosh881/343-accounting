@@ -235,6 +235,7 @@ def getTransactionHistory(order=1, withdrawal='', type=''):
         if withdrawal == 'Withdrawal':
             transactions = transactions[transactions >= 0]
         if withdrawal == 'Deposit':
+            print(transactions)
             transactions = transactions[transactions <= 0]
 
     if type == "Inventory":
@@ -244,12 +245,6 @@ def getTransactionHistory(order=1, withdrawal='', type=''):
         if withdrawal == 'Deposit':
             transactions = transactions[transactions <= 0]
 
-    if type == "Tax":
-        transactions = np.array(taxes)
-        if withdrawal == 'Withdrawal':
-            transactions = transactions[transactions >= 0]
-        if withdrawal == 'Deposit':
-            transactions = transactions[transactions <= 0]
     return json.dumps(list(transactions))
 
 
