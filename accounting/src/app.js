@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import Dashboard from './container/Dashboard';
 import History from './container/History';
+import queryString from 'query-string';
 
 import {Menu, Grid, Segment} from 'semantic-ui-react';
 import configureStore from './configureStore.js'
@@ -14,6 +15,18 @@ class Demo extends Component {
     state = {activeItem: 'Overview'};
 
     handleItemClick = (e, {name}) => this.setState({activeItem: name});
+
+    componentDidMount() {
+        var params = queryString.parse(location.search);
+        if (params && params.token) {
+            fetch('/api/login', {
+                method: 'POST',
+                body: JSON.stringify({
+                    token: params.token
+                })
+            })
+        }
+    }
 
     render() {
         const {activeItem} = this.state;
