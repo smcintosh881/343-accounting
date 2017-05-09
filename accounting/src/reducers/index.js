@@ -60,8 +60,6 @@ function transactions(state = {}, action) {
                     negative: negative
                 }
             });
-        case actions.RECEIVE_FILTERED_TRANSACTIONS:
-            return action.data;
         default:
             return state
     }

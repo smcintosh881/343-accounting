@@ -65,9 +65,8 @@ export function fetchSpending() {
 
 function filterTransactions(payload) {
     return (dispatch) => {
-        console.log(payload);
         return fetch('/api/reporting', {
-            method: 'get',
+            method: 'POST',
             body: JSON.stringify(payload)
         })
             .then(response => response.json())
@@ -76,9 +75,8 @@ function filterTransactions(payload) {
 }
 
 function ReceiveFilterTransactions(json) {
-    console.log(json);
     return {
-        type: actions.RECEIVE_FILTERED_TRANSACTIONS,
+        type: actions.RECEIVE_TRANSACTIONS,
         data: json
     }
 }
@@ -106,7 +104,9 @@ function receiveTransactions(json) {
 function fetchTransactions() {
     return dispatch => {
         dispatch(requestTransactions());
-        return fetch('/api/reporting')
+        return fetch('/api/reporting', {
+            method: 'POST',
+        })
             .then(response => response.json())
             .then(json => dispatch(receiveTransactions(json)))
     }

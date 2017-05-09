@@ -24,7 +24,7 @@ class History extends Component {
 
     handleFilters(withdrawal, type) {
         const {dispatch} = this.props;
-        dispatch(fetchFilterTransactions({type: type, withdrawal: withdrawal}));
+        dispatch(fetchFilterTransactions({type: withdrawal, withdrawal: type}));
     }
 
     render() {

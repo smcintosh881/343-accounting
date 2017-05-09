@@ -6,18 +6,36 @@ export default class HistoryMenu extends Component {
         super(props);
     }
 
-    state = {};
+    state = {
+        disabled: true
+    };
 
     handleTransactionChange = (e, {value}) => {
-        this.setState({transaction: value});
+        this.setState({transaction: value, disabled: false});
     };
 
     handleTypeChange = (e, {value}) => {
-        this.setState({type: value});
+        this.setState({type: value, disabled: false});
     };
 
     clickEventHandler = (e) => {
-        this.props.handleFilters(this.state.transaction, this.state.type);
+        if (this.state.transaction && this.state.type) {
+            this.props.handleFilters(this.state.transaction, this.state.type);
+        }
+        if (this.state.transaction && !this.state.type) {
+            this.props.handleFilters(this.state.transaction);
+        }
+        if (!this.state.transaction && this.state.type) {
+            this.props.handleFilters(this.state.type);
+        }
+    };
+
+    resetState = (e) => {
+        this.setState({
+            transaction: null,
+            type: null
+        });
+        this.props.handleFilters();
     };
 
     render() {
@@ -71,11 +89,15 @@ export default class HistoryMenu extends Component {
                         </Menu.Menu>
                     </Menu.Item>
                 </Menu>
-                <Button
-                    onClick={this.clickEventHandler}
-                    style={{"marginLeft": "75%"}}
-                    content='Search'
-                    color='teal'/>
+                <Button.Group style={{"marginLeft": "42px"}}>
+                    <Button icon='refresh' onClick={this.resetState}/>
+                    <Button
+                        disabled={this.state.disabled}
+                        onClick={this.clickEventHandler}
+                        content='Search'
+                        color='teal'/>
+                </Button.Group>
+
             </div>
         )
     }
